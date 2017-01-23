@@ -14,7 +14,7 @@ public class PlayerAnimationController : MonoBehaviour {
 
 		//walking and running animations
 		animator.SetFloat("speed_vertical", Input.GetAxis("Vertical"));
-		if (Input.GetAxis("Vertical") != 0)
+		if (Input.GetAxis("Vertical") != 0 || Input.GetAxis("Strafe") != 0)
 		{
 			animator.SetFloat("running", Input.GetAxis("Run"));
 		}
@@ -22,6 +22,18 @@ public class PlayerAnimationController : MonoBehaviour {
 		{
 			animator.SetFloat("running", 0f);
 		}
+
+		//strafing animation
+		if(Input.GetAxis("Strafe") != 0)
+		{
+			animator.SetBool("strafing", true);
+			animator.SetFloat("speed_strafe", Input.GetAxis("Strafe"));
+		}
+		else
+		{
+			animator.SetBool("strafing", false);
+		}
+		Debug.Log(Input.GetAxis("Strafe"));
 
 		//turning animation and motion
 		if (Input.GetAxis("Horizontal") > 0)
