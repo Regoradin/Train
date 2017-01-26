@@ -61,5 +61,27 @@ public class PlayerAnimationController : MonoBehaviour {
 			animator.SetBool("turning_left", false);
 		}
 
+		//Shooting animation
+		if (Input.GetButton("Shoot"))
+		{
+			animator.SetBool("is_actioning", true);
+
+			animator.SetBool("shoot", true);
+
+			//finds the first weapon on the character, upgrade to set up multiple equipment types
+			GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
+			Transform previous_parent = weapon.transform.parent;
+			weapon.transform.parent = GameObject.Find("mixamorig:RightHand").transform;
+
+			Invoke("StopAction", 1);
+
+		}
+	}
+
+	void StopAction()
+	{
+		//provides an invokable exit from actions
+		animator.SetBool("is_actioning", false);
+		animator.SetBool("shoot", false);
 	}
 }
