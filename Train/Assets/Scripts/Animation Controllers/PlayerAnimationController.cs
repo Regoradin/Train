@@ -5,6 +5,10 @@ public class PlayerAnimationController : MonoBehaviour {
 
 	private Animator animator;
 
+	private Transform previous_parent;
+	private Vector3 previous_position;
+	private Quaternion previous_rotation;
+
 	void Start()
 	{
 		animator = GetComponent<Animator>();
@@ -33,7 +37,6 @@ public class PlayerAnimationController : MonoBehaviour {
 		{
 			animator.SetBool("strafing", false);
 		}
-		Debug.Log(Input.GetAxis("Strafe"));
 
 		//turning animation and motion
 		if (Input.GetAxis("Horizontal") > 0)
@@ -64,24 +67,47 @@ public class PlayerAnimationController : MonoBehaviour {
 		//Shooting animation
 		if (Input.GetButton("Shoot"))
 		{
-			animator.SetBool("is_actioning", true);
-
 			animator.SetBool("shoot", true);
-
-			//finds the first weapon on the character, upgrade to set up multiple equipment types
-			GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
-			Transform previous_parent = weapon.transform.parent;
-			weapon.transform.parent = GameObject.Find("mixamorig:RightHand").transform;
 
 			Invoke("StopAction", 1);
 
 		}
 	}
 
+	void Equip()
+	{
+		//gets called when the gun is grabbed in the shooting animation
+
+		GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
+		
+		//stores previous position/rotation/parent so as to reset when unequiping
+		previous_parent = weapon.transform.parent;
+		previous_position = weapon.transform.localPosition;
+		previous_rotation = weapon.transform.localRotation;
+
+		//parents the gun to the hand with the appropriate position/rotation. currently these are magic numbers, maybe fix in the future?
+		weapon.transform.parent = GameObject.Find("mixamorig:RightHand").transform;
+		weapon.transform.localEulerAngles = new Vector3(-90f, 0f, 0f);
+		weapon.transform.localPosition = new Vector3(-0f, 0.0106f, 0.0413f);
+		
+	}
+
+	void Unequip()
+	{
+		//gets called when the gun is replaced in the shooting animation
+
+		GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
+
+		//resets the parent/position/rotation to what it was before shooting
+		weapon.transform.parent = previous_parent;
+		weapon.transform.localPosition = previous_position;
+		weapon.transform.localRotation = previous_rotation;
+	}
+
 	void StopAction()
 	{
 		//provides an invokable exit from actions
-		animator.SetBool("is_actioning", false);
+		Debug.Log("stopping action");
 		animator.SetBool("shoot", false);
 	}
 }
