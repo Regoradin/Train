@@ -4,6 +4,10 @@ using UnityEngine;
 
 public class TrainController : MonoBehaviour {
 
+	public float power;
+	public float top_speed;
+	public float rotation_speed;
+
 	//the track that the train is currently running on
 	private GameObject track;
 	private Rigidbody rb;
@@ -12,7 +16,7 @@ public class TrainController : MonoBehaviour {
 	{
 		rb = GetComponent<Rigidbody>();
 
-		rb.velocity = new Vector3(0f, 0f, 5f);
+		//rb.velocity = new Vector3(0f, 0f, speed);
 	}
 
 	void OnTriggerEnter(Collider other)
@@ -35,14 +39,31 @@ public class TrainController : MonoBehaviour {
 		}
 	}
 
-	void FixedUpdate()
+	void Update()
 	{
+		Debug.Log("speed: " + rb.velocity.magnitude);
+		if (rb.velocity.magnitude < top_speed)
+		{
+			rb.AddRelativeForce(power * Vector3.forward);
+		}
+
 		if (track)
 		{
-			Debug.Log(name + " " + track.name);
-
 			//ensures that the train is rotated to be aligned with the track
-			transform.rotation = track.transform.rotation;
+			//transform.rotation = track.transform.rotation;
+
+			//adjusts rotation by rotation_speed to smoothly match track rotation
+
+			if(Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < 0)
+			{
+				transform.Rotate(-rotation_speed * Vector3.up);
+			}
+			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > 0)
+			{
+				transform.Rotate(rotation_speed * Vector3.up);
+			}
+
+
 
 			//ensures that the train is only going in the forward direction
 			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude;
