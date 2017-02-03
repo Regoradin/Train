@@ -76,7 +76,7 @@ public class PlayerAnimationController : MonoBehaviour {
 
 	void Equip()
 	{
-		//gets called when the gun is grabbed in the shooting animation
+		//gets called by the animator controller when the gun is grabbed in the shooting animation
 
 		GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
 		
@@ -94,7 +94,7 @@ public class PlayerAnimationController : MonoBehaviour {
 
 	void Unequip()
 	{
-		//gets called when the gun is replaced in the shooting animation
+		//gets called by the animator controller when gun is replaced in the shooting animation
 
 		GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
 
@@ -107,7 +107,6 @@ public class PlayerAnimationController : MonoBehaviour {
 	void StopAction()
 	{
 		//provides an invokable exit from actions
-		Debug.Log("stopping action");
 		animator.SetBool("shoot", false);
 	}
 }
