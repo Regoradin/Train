@@ -37,20 +37,16 @@ public class TrainController : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		rb.AddRelativeForce(Vector3.forward * 10);
-		Debug.Log("velocity: " + rb.velocity);
-		Debug.Log("velocity magnitutde: " + rb.velocity.magnitude);
-
 		if (track)
 		{
+			Debug.Log(name + " " + track.name);
+
 			//ensures that the train is rotated to be aligned with the track
 			transform.rotation = track.transform.rotation;
 
 			//ensures that the train is only going in the forward direction
 			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude;
 			rb.velocity = transform.TransformDirection(local_velocity);
-
-			Debug.Log("local_velocity: " + local_velocity);
 		}		
 	}
 
