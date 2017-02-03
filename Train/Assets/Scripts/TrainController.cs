@@ -39,9 +39,8 @@ public class TrainController : MonoBehaviour {
 		}
 	}
 
-	void Update()
+	void FixedUpdate()
 	{
-		Debug.Log("speed: " + rb.velocity.magnitude);
 		if (rb.velocity.magnitude < top_speed)
 		{
 			rb.AddRelativeForce(power * Vector3.forward);
@@ -54,6 +53,8 @@ public class TrainController : MonoBehaviour {
 
 			//adjusts rotation by rotation_speed to smoothly match track rotation
 
+			//Debug.Log(name + " " + Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y));
+
 			if(Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < 0)
 			{
 				transform.Rotate(-rotation_speed * Vector3.up);
@@ -61,6 +62,17 @@ public class TrainController : MonoBehaviour {
 			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > 0)
 			{
 				transform.Rotate(rotation_speed * Vector3.up);
+			}
+			//if the angle between the train and the track is smaller than the rotation speed...
+			if(Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > -rotation_speed && Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < rotation_speed)
+			{
+				//line up the rotation of the train and the track
+				transform.rotation = track.transform.rotation;
+
+				//and center it in the local x direction
+				Vector3 position_to_track = track.transform.InverseTransformPoint(transform.position);
+				position_to_track = Vector3.Scale(position_to_track, new Vector3(0f, 1f, 1f));
+				transform.position = track.transform.TransformPoint(position_to_track);
 			}
 
 
