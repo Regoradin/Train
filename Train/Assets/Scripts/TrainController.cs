@@ -15,8 +15,6 @@ public class TrainController : MonoBehaviour {
 	void Start()
 	{
 		rb = GetComponent<Rigidbody>();
-
-		//rb.velocity = new Vector3(0f, 0f, speed);
 	}
 
 	void OnTriggerEnter(Collider other)
@@ -41,7 +39,7 @@ public class TrainController : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		if (rb.velocity.magnitude < top_speed)
+		if (rb.velocity.magnitude < top_speed && track != null)
 		{
 			rb.AddRelativeForce(power * Vector3.forward);
 		}
@@ -49,22 +47,19 @@ public class TrainController : MonoBehaviour {
 		if (track)
 		{
 			//ensures that the train is rotated to be aligned with the track
-			//transform.rotation = track.transform.rotation;
-
 			//adjusts rotation by rotation_speed to smoothly match track rotation
-
-			//Debug.Log(name + " " + Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y));
-
 			if(Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < 0)
 			{
 				transform.Rotate(-rotation_speed * Vector3.up);
+
 			}
 			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > 0)
 			{
 				transform.Rotate(rotation_speed * Vector3.up);
+
 			}
 			//if the angle between the train and the track is smaller than the rotation speed...
-			if(Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > -rotation_speed && Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < rotation_speed)
+			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > -rotation_speed && Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < rotation_speed)
 			{
 				//line up the rotation of the train and the track
 				transform.rotation = track.transform.rotation;
@@ -80,6 +75,8 @@ public class TrainController : MonoBehaviour {
 			//ensures that the train is only going in the forward direction
 			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude;
 			rb.velocity = transform.TransformDirection(local_velocity);
+
+			//Debug.Log(name + " velocity " + rb.velocity.magnitude);
 		}		
 	}
 
