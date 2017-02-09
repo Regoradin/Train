@@ -75,6 +75,11 @@ public class PlayerAnimationController : MonoBehaviour {
 		{
 			animator.SetBool("falling", false);
 		}
+		if (!controller.isGrounded)
+		{
+			Debug.Log("dropping");
+			controller.Move(Physics.gravity);
+		}
 
 		//Shooting animation
 		if (Input.GetButton("Shoot"))
