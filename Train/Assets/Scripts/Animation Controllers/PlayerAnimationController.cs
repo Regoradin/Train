@@ -66,6 +66,16 @@ public class PlayerAnimationController : MonoBehaviour {
 			animator.SetBool("turning_left", false);
 		}
 
+		//falling
+		if (!controller.isGrounded)
+		{
+			animator.SetBool("falling", true);
+		}
+		else
+		{
+			animator.SetBool("falling", false);
+		}
+
 		//Shooting animation
 		if (Input.GetButton("Shoot"))
 		{
