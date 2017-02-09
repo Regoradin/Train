@@ -4,6 +4,7 @@ using System.Collections;
 public class PlayerAnimationController : MonoBehaviour {
 
 	private Animator animator;
+	private CharacterController controller;
 
 	private Transform previous_parent;
 	private Vector3 previous_position;
@@ -12,6 +13,7 @@ public class PlayerAnimationController : MonoBehaviour {
 	void Start()
 	{
 		animator = GetComponent<Animator>();
+		controller = GetComponent<CharacterController>();
 	}
 
 	void Update () {
@@ -109,4 +111,14 @@ public class PlayerAnimationController : MonoBehaviour {
 		//provides an invokable exit from actions
 		animator.SetBool("shoot", false);
 	}
+
+	void OnTriggerEnter(Collider other)
+	{
+		//carriage entering
+		if(other.tag == "Carriage")
+		{
+			transform.parent = other.transform;
+		}
+	}
+
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class TrainController : MonoBehaviour {
+public class CarriageController : MonoBehaviour {
 
 	public float power;
 	public float top_speed;
