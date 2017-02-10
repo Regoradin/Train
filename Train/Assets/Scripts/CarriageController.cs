@@ -4,8 +4,6 @@ using UnityEngine;
 
 public class CarriageController : MonoBehaviour {
 
-	public float power;
-	public float top_speed;
 	public float rotation_speed;
 
 	//the track that the train is currently running on
@@ -39,11 +37,6 @@ public class CarriageController : MonoBehaviour {
 
 	void FixedUpdate()
 	{
-		if (rb.velocity.magnitude < top_speed && track != null)
-		{
-			rb.AddRelativeForce(power * Vector3.forward);
-		}
-
 		if (track)
 		{
 			//ensures that the train is rotated to be aligned with the track
@@ -75,8 +68,6 @@ public class CarriageController : MonoBehaviour {
 			//ensures that the train is only going in the forward direction
 			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude;
 			rb.velocity = transform.TransformDirection(local_velocity);
-
-			//Debug.Log(name + " velocity " + rb.velocity.magnitude);
 		}		
 	}
 

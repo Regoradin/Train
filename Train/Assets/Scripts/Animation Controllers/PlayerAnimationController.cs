@@ -77,7 +77,6 @@ public class PlayerAnimationController : MonoBehaviour {
 		}
 		if (!controller.isGrounded)
 		{
-			Debug.Log("dropping");
 			controller.Move(Physics.gravity);
 		}
 
@@ -94,9 +93,9 @@ public class PlayerAnimationController : MonoBehaviour {
 	void Equip()
 	{
 		//gets called by the animator controller when the gun is grabbed in the shooting animation
-
-		GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
 		
+		GameObject weapon = GameObject.FindGameObjectsWithTag("Weapon")[0];
+
 		//stores previous position/rotation/parent so as to reset when unequiping
 		previous_parent = weapon.transform.parent;
 		previous_position = weapon.transform.localPosition;
