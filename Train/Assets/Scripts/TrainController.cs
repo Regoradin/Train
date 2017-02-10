@@ -11,7 +11,7 @@ public class TrainController : MonoBehaviour {
 	[HideInInspector]
 	public float speed;
 	[HideInInspector]
-	public float target_speed;
+	public float target_speed = 100f;
 
 	void Start()
 	{
