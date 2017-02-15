@@ -71,7 +71,6 @@ public class Engine : MonoBehaviour {
 
 		if(train_controller.speed < train_controller.target_speed)
 		{
-			Debug.Log("going");
 			train_controller.AddForce(heat * engine_efficiency * Time.deltaTime);
 		}
 	}
