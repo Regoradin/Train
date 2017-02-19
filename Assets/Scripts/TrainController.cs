@@ -18,8 +18,8 @@ public class TrainController : MonoBehaviour {
 
 		target_speed = 100f;
 
+		//builds a list of all the carriages in the same order as they are in the inspector
 		carriages = new List<GameObject>();
-
 		foreach (Transform child in transform)
 		{
 			if(child.gameObject.tag == "Carriage")
@@ -33,7 +33,13 @@ public class TrainController : MonoBehaviour {
 	void Update()
 	{
 		speed = carriages[0].GetComponent<Rigidbody>().velocity.magnitude;
-		//Debug.Log("Speed: " + speed + " Target: " + target_speed);
+
+		//changes the local forward velocity of each carriage to match the lead carriages speed
+		foreach (GameObject carriage in carriages)
+		{
+			Vector3 new_speed = carriage.transform.InverseTransformDirection(speed * Vector3.forward);
+			carriage.GetComponent<Rigidbody>().velocity = new_speed;
+		}
 	}
 
 	/// <summary>

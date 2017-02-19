@@ -53,7 +53,7 @@ public class CarriageController : MonoBehaviour {
 
 			}
 			//if the angle between the train and the track is smaller than the rotation speed...
-			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > -rotation_speed && Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < rotation_speed)
+			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) >= -rotation_speed && Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) <= rotation_speed)
 			{
 				//line up the rotation of the train and the track
 				transform.rotation = track.transform.rotation;

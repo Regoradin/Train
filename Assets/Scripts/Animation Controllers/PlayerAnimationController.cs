@@ -67,18 +67,23 @@ public class PlayerAnimationController : MonoBehaviour {
 		}
 
 		//falling
-		if (!controller.isGrounded)
-		{
-			animator.SetBool("falling", true);
-		}
-		else
-		{
-			animator.SetBool("falling", false);
-		}
-		if (!controller.isGrounded)
-		{
-			controller.Move(Physics.gravity);
-		}
+		//if (!controller.isGrounded)
+		//{
+		//	controller.Move(Physics.gravity);
+		//}
+
+		//if (!controller.isGrounded)
+		//{
+		//	animator.SetBool("falling", true);
+		//}
+		//else
+		//{
+		//	animator.SetBool("falling", false);
+		//}
+		//if (!controller.isGrounded)
+		//{
+		//	controller.Move(Physics.gravity);
+		//}
 
 		//Shooting animation
 		if (Input.GetButton("Shoot"))
