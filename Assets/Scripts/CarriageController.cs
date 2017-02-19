@@ -15,6 +15,7 @@ public class CarriageController : MonoBehaviour {
 		rb = GetComponent<Rigidbody>();
 	}
 
+	//finds the next track that the train is on
 	void OnTriggerEnter(Collider other)
 	{
 		if (other.tag == "Track")
@@ -57,10 +58,12 @@ public class CarriageController : MonoBehaviour {
 				//line up the rotation of the train and the track
 				transform.rotation = track.transform.rotation;
 
-				//and center it in the local x direction
+				//and center it in the local x direction by setting it to have 0 x position local to the track
 				Vector3 position_to_track = track.transform.InverseTransformPoint(transform.position);
 				position_to_track = Vector3.Scale(position_to_track, new Vector3(0f, 1f, 1f));
 				transform.position = track.transform.TransformPoint(position_to_track);
+
+			//	Debug.Log(name + " lined up with " + track.name + " at position " + position_to_track);
 			}
 
 

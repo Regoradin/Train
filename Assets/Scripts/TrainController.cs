@@ -33,7 +33,7 @@ public class TrainController : MonoBehaviour {
 	void Update()
 	{
 		speed = carriages[0].GetComponent<Rigidbody>().velocity.magnitude;
-		Debug.Log("Speed: " + speed + " Target: " + target_speed);
+		//Debug.Log("Speed: " + speed + " Target: " + target_speed);
 	}
 
 	/// <summary>
