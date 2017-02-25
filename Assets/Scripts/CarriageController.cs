@@ -21,6 +21,12 @@ public class CarriageController : MonoBehaviour {
 		if (other.tag == "Track")
 		{
 			track = other.gameObject;
+
+			//fixes issues with the track facing the opposite direction. Stuff will get weird if you go at a track at a near 90 degree angle, but they probably should
+			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) >= 90 || Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) <= -90)
+			{
+				track.transform.Rotate(Vector3.up * 180);
+			}
 		}
 
 	}
@@ -62,11 +68,7 @@ public class CarriageController : MonoBehaviour {
 				Vector3 position_to_track = track.transform.InverseTransformPoint(transform.position);
 				position_to_track = Vector3.Scale(position_to_track, new Vector3(0f, 1f, 1f));
 				transform.position = track.transform.TransformPoint(position_to_track);
-
-			//	Debug.Log(name + " lined up with " + track.name + " at position " + position_to_track);
 			}
-
-
 
 			//ensures that the train is only going in the forward direction
 			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude;
