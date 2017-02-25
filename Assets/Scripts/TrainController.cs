@@ -11,13 +11,10 @@ public class TrainController : MonoBehaviour {
 	[HideInInspector]
 	public float speed;
 	[HideInInspector]
-	public float target_speed;
+	public float target_speed = 0f;
 
 	void Start()
 	{
-
-		target_speed = 100f;
-
 		//builds a list of all the carriages in the same order as they are in the inspector
 		carriages = new List<GameObject>();
 		foreach (Transform child in transform)

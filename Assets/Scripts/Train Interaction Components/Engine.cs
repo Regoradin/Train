@@ -6,6 +6,9 @@ public class Engine : MonoBehaviour {
 
 	private TrainController train_controller;
 
+	public ParticleSystem smoke;
+	public float smoke_emission_rate;
+
 	private bool shoveling = false;
 
 	private float coal;
@@ -73,8 +76,15 @@ public class Engine : MonoBehaviour {
 		{
 			train_controller.AddForce(heat * engine_efficiency * Time.deltaTime);
 		}
+
+		var emission = smoke.emission;
+		emission.rateOverTime = heat * smoke_emission_rate;
+
 	}
 
+	/// <summary>
+	/// coal into fuel
+	/// </summary>
 	void Shovel()
 	{
 		if (fuel + shovel_efficiency < max_fuel)
@@ -94,6 +104,9 @@ public class Engine : MonoBehaviour {
 		shoveling = false;
 	}
 
+	/// <summary>
+	/// fuel into heat
+	/// </summary>
 	void Burn()
 	{
 		//fuel is reduced at 1 per second, regardless of engine characteristics, because the same piece of wood on fire will take the same length of time to burn. better engines will get more heat out of it though.
