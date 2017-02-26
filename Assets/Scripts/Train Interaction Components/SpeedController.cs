@@ -35,7 +35,6 @@ public class SpeedController : MonoBehaviour {
 
 	void ApplyBreaks()
 	{
-		Debug.Log("Breaking");
 		train_controller.AddForce(-break_force);
 	}
 }

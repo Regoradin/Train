@@ -5,6 +5,7 @@ using UnityEngine;
 public class CarriageController : MonoBehaviour {
 
 	public float rotation_speed;
+	public float empty_mass;
 
 	//the track that the train is currently running on
 	private GameObject track;
@@ -13,6 +14,7 @@ public class CarriageController : MonoBehaviour {
 	void Start()
 	{
 		rb = GetComponent<Rigidbody>();
+		rb.mass = empty_mass;
 	}
 
 	//finds the next track that the train is on
