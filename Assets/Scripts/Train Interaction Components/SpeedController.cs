@@ -16,7 +16,7 @@ public class SpeedController : MonoBehaviour {
 
 	void OnTriggerStay(Collider other)
 	{
-		if(other.tag == "Player")
+		if (other.tag == "Player")
 		{
 			//changes the target speed by an input
 			train_controller.target_speed += Input.GetAxis("Train_speed");
@@ -26,15 +26,19 @@ public class SpeedController : MonoBehaviour {
 				Debug.Log("target_speed: " + train_controller.target_speed);
 			}
 
-			if(train_controller.speed > train_controller.target_speed)
+			if (train_controller.speed > train_controller.target_speed && train_controller.target_speed > 0)
 			{
-				ApplyBreaks();
+				ApplyBreaks(break_force);
+			}
+			if (train_controller.speed < train_controller.target_speed && train_controller.target_speed < 0)
+			{
+				ApplyBreaks(-break_force);
 			}
 		}
 	}
 
-	void ApplyBreaks()
+	void ApplyBreaks(float force)
 	{
-		train_controller.AddForce(-break_force);
+		train_controller.AddForce(-force);
 	}
 }
