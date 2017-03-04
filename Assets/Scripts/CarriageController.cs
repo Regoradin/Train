@@ -11,6 +11,9 @@ public class CarriageController : MonoBehaviour {
 	private GameObject track;
 	private Rigidbody rb;
 
+	[HideInInspector]
+	public string direction;
+
 	void Start()
 	{
 		rb = GetComponent<Rigidbody>();

@@ -13,6 +13,28 @@ public class TrainController : MonoBehaviour {
 	[HideInInspector]
 	public float target_speed = 0f;
 
+	private string direction;
+	[HideInInspector]
+	public string Direction
+	{
+		get
+		{
+			return direction;
+		}
+		set
+		{
+			if (value == "left" || value == "center" || value == "right")
+			{
+				direction = value;
+				UpdateCarriageDirection(value);
+			}
+			else
+			{
+				Debug.Log("Invalid direction " + value + " tried to set as train " + name + " direction");
+			}
+		}
+	}
+
 	void Start()
 	{
 		//builds a list of all the carriages in the same order as they are in the inspector
@@ -24,6 +46,8 @@ public class TrainController : MonoBehaviour {
 				carriages.Add(child.gameObject);
 			}
 		}
+
+		UpdateCarriageDirection(direction);			//this has to be done at the start to set direction, but after the carriages list is built
 
 	}
 
@@ -47,8 +71,16 @@ public class TrainController : MonoBehaviour {
 	{
 		foreach(GameObject carriage in carriages)
 		{
-			//Debug.Log("Adding force to " + carriage.name + force);
 			carriage.GetComponent<Rigidbody>().AddRelativeForce(Vector3.forward * force);
+		}
+	}
+	
+	void UpdateCarriageDirection(string direction)
+	{
+		//updates the direction of each carriage for traversing junctions
+		foreach(GameObject carriage in carriages)
+		{
+			carriage.GetComponent<CarriageController>().direction = direction;
 		}
 	}
 }
