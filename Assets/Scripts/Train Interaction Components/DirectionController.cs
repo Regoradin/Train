@@ -8,7 +8,6 @@ public class DirectionController : MonoBehaviour {
 
 	public string initial_direction;
 	
-	// Use this for initialization
 	void Start () {
 		train_controller = GetComponentInParent<TrainController>();
 
@@ -16,7 +15,6 @@ public class DirectionController : MonoBehaviour {
 
 	}
 	
-	// Update is called once per frame
 	void Update () {
 		
 	}
