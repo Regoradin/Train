@@ -1,10 +1,11 @@
-﻿using System.Collections;
+﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class Junction : MonoBehaviour {
 
-	//Gameobjects which have the tracks comprising the branches as their children
+	//Gameobjects which have the tracks comprising the branches as their children. The parent GameObject is the opening/closing track for that branch
 	public GameObject entrance_parent;
 	public GameObject left_parent;
 	public GameObject center_parent;
@@ -32,12 +33,22 @@ public class Junction : MonoBehaviour {
 			paths[key].AddRange(GetTracks(entrance_parent));
 		}
 
+
+		//add events to listen for entraces to the junction
+		entrance_parent.GetComponent<Track>().OnTrainCross += Enter;
+		left_parent.GetComponent<Track>().OnTrainCross += ReverseEnter;
+		center_parent.GetComponent<Track>().OnTrainCross += ReverseEnter;
+		right_parent.GetComponent<Track>().OnTrainCross += ReverseEnter;
+
 	}
+
 
 	private List<GameObject> GetTracks(GameObject parent)
 	{
 		List<GameObject> tracks = new List<GameObject>();
 
+		//adds itself to the list
+		tracks.Add(parent);
 
 		//builds a list of all the children that are tracks
 		foreach(Transform child in parent.transform)
@@ -50,5 +61,29 @@ public class Junction : MonoBehaviour {
 
 		return tracks;
 	}
-	
+
+
+	private void Enter(GameObject entered_track, GameObject carriage)
+	{
+		string direction = carriage.GetComponent<TrainController>().Direction;
+
+		//turning on only appropriate track
+		foreach (string key in paths.Keys)
+		{
+			foreach(GameObject track in paths[key])
+			{
+				track.SetActive(false);
+			}
+		}
+
+		foreach(GameObject track in paths[direction])
+		{
+			track.SetActive(true);
+		}
+	}
+
+	private void ReverseEnter(GameObject entered_track, GameObject carriage)
+	{
+
+	}
 }
