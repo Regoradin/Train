@@ -83,13 +83,13 @@ public class Junction : MonoBehaviour {
 		{
 			foreach(GameObject track in paths[key])
 			{
-				track.SetActive(false);
+				track.GetComponent<Collider>().enabled = false;
 			}
 		}
 
 		foreach(GameObject track in paths[direction])
 		{
-			track.SetActive(true);
+			track.GetComponent<Collider>().enabled = true;
 		}
 
 		//adjusting event listening on the chosen path 
@@ -148,7 +148,7 @@ public class Junction : MonoBehaviour {
 		{
 			foreach (GameObject track in paths[key])
 			{
-				track.SetActive(true);
+				track.GetComponent<Collider>().enabled= true;
 			}
 		}
 
