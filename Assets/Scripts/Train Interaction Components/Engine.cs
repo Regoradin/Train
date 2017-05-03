@@ -72,15 +72,16 @@ public class Engine : MonoBehaviour {
 			heat -= cooling_rate * Time.deltaTime;
 		}
 
-		if(train_controller.speed < train_controller.target_speed && train_controller.target_speed > 0)
+
+		//running the engine
+		float engine_force = heat * engine_efficiency * Time.deltaTime;
+		if (train_controller.target_speed > train_controller.speed && train_controller.speed > 0)
 		{
-			//go forwards
-			train_controller.AddForce(heat * engine_efficiency * Time.deltaTime);
+			train_controller.AddForce(engine_force);
 		}
-		if(train_controller.speed > train_controller.target_speed && train_controller.target_speed < 0)
+		if(train_controller.target_speed < train_controller.speed && train_controller.speed < 0)
 		{
-			//go backwards
-			train_controller.AddForce(heat * engine_efficiency * Time.deltaTime * -1);
+			train_controller.AddForce(-engine_force);
 		}
 
 		var emission = smoke.emission;

@@ -75,8 +75,8 @@ public class CarriageController : MonoBehaviour {
 				transform.position = track.transform.TransformPoint(position_to_track);
 			}
 
-			//ensures that the train is only going in the forward direction
-			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude;
+			//ensures that the train is only going in the forward axis, multiplied by the sign of the z axis, which should (unless something goes horribly wrong) be the same direction as the train in general
+			Vector3 local_velocity = Vector3.forward * rb.velocity.magnitude * Mathf.Sign(rb.velocity.z);
 			rb.velocity = transform.TransformDirection(local_velocity);
 		}		
 	}

@@ -53,7 +53,7 @@ public class TrainController : MonoBehaviour {
 
 	void Update()
 	{
-		speed = carriages[0].GetComponent<Rigidbody>().velocity.magnitude;
+		speed = carriages[0].GetComponent<Rigidbody>().velocity.z;
 
 		//changes the local forward velocity of each carriage to match the lead carriages speed
 		foreach (GameObject carriage in carriages)
@@ -64,7 +64,7 @@ public class TrainController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Add a force to all carriages in the train
+	/// Add a force to all carriages in the train. This should probably only be called by the engine to go forward, and the speedController to apply breaks
 	/// </summary>
 	/// <param name="force">The force to add</param>
 	public void AddForce(float force)
