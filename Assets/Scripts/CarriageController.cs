@@ -26,12 +26,6 @@ public class CarriageController : MonoBehaviour {
 		if (other.tag == "Track")
 		{
 			track = other.gameObject;
-
-			//fixes issues with the track facing the opposite direction. Stuff will get weird if you go at a track at a near 90 degree angle, but they probably should
-			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) >= 90 || Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) <= -90)
-			{
-				track.transform.Rotate(Vector3.up * 180);
-			}
 		}
 
 	}
@@ -53,21 +47,43 @@ public class CarriageController : MonoBehaviour {
 		{
 			//ensures that the train is rotated to be aligned with the track
 			//adjusts rotation by rotation_speed to smoothly match track rotation
-			if(Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) < 0)
+			float angle_diff = Mathf.DeltaAngle(transform.rotation.eulerAngles.y, track.transform.rotation.eulerAngles.y);
+
+			//front facing
+			if(angle_diff < 0 && angle_diff > -90)
 			{
 				transform.Rotate(-rotation_speed * Vector3.up);
-
 			}
-			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) > 0)
+			if (angle_diff > 0 && angle_diff < 90)
 			{
 				transform.Rotate(rotation_speed * Vector3.up);
-
 			}
+			//reverse facing
+			if(angle_diff > 90 && angle_diff < 180)
+			{
+				transform.Rotate(-rotation_speed * Vector3.up);
+			}
+			if(angle_diff < -90 && angle_diff > -180)
+			{
+				transform.Rotate(rotation_speed * Vector3.up);
+			}
+
 			//if the angle between the train and the track is smaller than the rotation speed...
-			if (Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) >= -rotation_speed && Mathf.DeltaAngle(transform.eulerAngles.y, track.transform.eulerAngles.y) <= rotation_speed)
+			if (Mathf.Abs(angle_diff) <= rotation_speed)
 			{
 				//line up the rotation of the train and the track
 				transform.rotation = track.transform.rotation;
+
+				//and center it in the local x direction by setting it to have 0 x position local to the track
+				Vector3 position_to_track = track.transform.InverseTransformPoint(transform.position);
+				position_to_track = Vector3.Scale(position_to_track, new Vector3(0f, 1f, 1f));
+				transform.position = track.transform.TransformPoint(position_to_track);
+			}
+			//does the same thing as the above block, but for when the train is pointing in the reverse direction.
+			if (Mathf.Abs(Mathf.Abs(angle_diff) - 180) <= rotation_speed)
+			{
+				//line up the rotation of the train and the track but in reverse direction
+				transform.eulerAngles = track.transform.eulerAngles + (Vector3.up * 180);
 
 				//and center it in the local x direction by setting it to have 0 x position local to the track
 				Vector3 position_to_track = track.transform.InverseTransformPoint(transform.position);
