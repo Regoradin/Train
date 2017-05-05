@@ -43,9 +43,9 @@ public class Junction : MonoBehaviour {
 
 		//add events to listen for entraces to the junction
 		entrance_parent.GetComponent<Track>().OnTrainCross += Enter;
-		left_parent.GetComponent<Track>().OnTrainCross += ReverseEnter;
-		center_parent.GetComponent<Track>().OnTrainCross += ReverseEnter;
-		right_parent.GetComponent<Track>().OnTrainCross += ReverseEnter;
+		left_parent.GetComponent<Track>().OnTrainCross += Enter;
+		center_parent.GetComponent<Track>().OnTrainCross += Enter;
+		right_parent.GetComponent<Track>().OnTrainCross += Enter;
 
 
 	}
@@ -76,7 +76,27 @@ public class Junction : MonoBehaviour {
 
 	private void Enter(GameObject entered_track, GameObject carriage)
 	{
-		string direction = carriage.GetComponentInParent<TrainController>().Direction;
+		//sets up direction, which is basically the path the train is taking
+		string direction = "";
+		if (entered_track == entrance_parent)
+		{
+			direction = carriage.GetComponentInParent<TrainController>().Direction;
+		}
+		if(entered_track == left_parent)
+		{
+			direction = "left";
+		}
+		if(entered_track == center_parent)
+		{
+			direction = "center";
+		}
+		if(entered_track == right_parent)
+		{
+			direction = "right";
+		}
+
+		Debug.Log("direction is set to: " + direction);
+
 
 		//turning off all tracks, and then only turn on appropriate track
 		foreach (string key in paths.Keys)
@@ -95,17 +115,13 @@ public class Junction : MonoBehaviour {
 		//adjusting event listening on the chosen path 
 		//removing the waiting for entrance events
 		entrances["entrance"].GetComponent<Track>().OnTrainCross -= Enter;
-		entrances[direction].GetComponent<Track>().OnTrainCross -= ReverseEnter;
+		entrances[direction].GetComponent<Track>().OnTrainCross -= Enter;
 		//adding events for the train being in the junction
 		entrances["entrance"].GetComponent<Track>().OnTrainCross += OpenEnter;
 		entrances[direction].GetComponent<Track>().OnTrainCross += OpenExit;
 
 	}
 
-	private void ReverseEnter(GameObject entered_track, GameObject carriage)
-	{
-
-	}
 
 	//OpenEnter and OpenExit are functions that listen to carriages entering and leaving a junction that has already been opened. As such, entered_track should be the track that is the entrance or exit, respectively
 	private void OpenEnter(GameObject entered_track, GameObject carriage)
@@ -140,7 +156,7 @@ public class Junction : MonoBehaviour {
 		}
 		else
 		{
-			entered_track.GetComponent<Track>().OnTrainCross += ReverseEnter;
+			entered_track.GetComponent<Track>().OnTrainCross += Enter;
 		}
 
 		//turn deactivated paths back on
