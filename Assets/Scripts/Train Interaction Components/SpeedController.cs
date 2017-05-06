@@ -28,19 +28,19 @@ public class SpeedController : MonoBehaviour {
 			}
 
 			//applying breaks
-			if (train_controller.speed > train_controller.target_speed && train_controller.target_speed > 0)
+			if (train_controller.local_speed > train_controller.target_speed && train_controller.target_speed > 0)
 			{
 				ApplyBreaks(break_force);
 			}
-			if (train_controller.speed < train_controller.target_speed && train_controller.target_speed < 0)
+			if (train_controller.local_speed < train_controller.target_speed && train_controller.target_speed < 0)
 			{
 				ApplyBreaks(-break_force);
 			}
-			if(train_controller.speed > 0 && train_controller.target_speed < 0)
+			if(train_controller.local_speed > 0 && train_controller.target_speed < 0)
 			{
 				ApplyBreaks(break_force);
 			}
-			if(train_controller.speed < 0 && train_controller.target_speed > 0)
+			if(train_controller.local_speed < 0 && train_controller.target_speed > 0)
 			{
 				ApplyBreaks(-break_force);
 			}

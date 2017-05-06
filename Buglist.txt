@@ -1,0 +1,1 @@
+Junctions will totally break if you enter them and then reverse out of them.

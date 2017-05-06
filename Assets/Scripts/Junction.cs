@@ -42,10 +42,10 @@ public class Junction : MonoBehaviour {
 		entrances["right"] = right_parent;
 
 		//add events to listen for entraces to the junction
-		entrance_parent.GetComponent<Track>().OnTrainCross += Enter;
-		left_parent.GetComponent<Track>().OnTrainCross += Enter;
-		center_parent.GetComponent<Track>().OnTrainCross += Enter;
-		right_parent.GetComponent<Track>().OnTrainCross += Enter;
+		entrance_parent.GetComponent<Track>().OnTrainEnter += Enter;
+		left_parent.GetComponent<Track>().OnTrainEnter += Enter;
+		center_parent.GetComponent<Track>().OnTrainEnter += Enter;
+		right_parent.GetComponent<Track>().OnTrainEnter += Enter;
 
 
 	}
@@ -114,11 +114,19 @@ public class Junction : MonoBehaviour {
 
 		//adjusting event listening on the chosen path 
 		//removing the waiting for entrance events
-		entrances["entrance"].GetComponent<Track>().OnTrainCross -= Enter;
-		entrances[direction].GetComponent<Track>().OnTrainCross -= Enter;
+		entrances["entrance"].GetComponent<Track>().OnTrainEnter -= Enter;
+		entrances[direction].GetComponent<Track>().OnTrainEnter -= Enter;
 		//adding events for the train being in the junction
-		entrances["entrance"].GetComponent<Track>().OnTrainCross += OpenEnter;
-		entrances[direction].GetComponent<Track>().OnTrainCross += OpenExit;
+		if (entered_track == entrances["entrance"])
+		{
+			entrances["entrance"].GetComponent<Track>().OnTrainEnter += OpenEnter;
+			entrances[direction].GetComponent<Track>().OnTrainExit += OpenExit;
+		}
+		else
+		{
+			entrances["entrance"].GetComponent<Track>().OnTrainExit += OpenExit;
+			entrances[direction].GetComponent<Track>().OnTrainEnter += OpenEnter;
+		}
 
 	}
 
@@ -140,6 +148,7 @@ public class Junction : MonoBehaviour {
 				if(entrance.Value.activeSelf == true)
 				{
 					Reset(entrance.Value);
+					Debug.Log("reseting jucntion");
 				}
 			}
 		}
@@ -149,15 +158,11 @@ public class Junction : MonoBehaviour {
 	{
 
 		//reset event listening
-		entered_track.GetComponent<Track>().OnTrainCross -= OpenEnter;
-		if (entered_track = entrances["entrance"])
-		{
-			entered_track.GetComponent<Track>().OnTrainCross += Enter;
-		}
-		else
-		{
-			entered_track.GetComponent<Track>().OnTrainCross += Enter;
-		}
+		Track track_script = entered_track.GetComponent<Track>();
+		track_script.OnTrainEnter -= OpenEnter;
+		track_script.OnTrainExit -= OpenExit;
+
+		track_script.OnTrainEnter += Enter;
 
 		//turn deactivated paths back on
 		foreach(string key in paths.Keys)

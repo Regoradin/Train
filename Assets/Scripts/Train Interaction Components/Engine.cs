@@ -54,7 +54,7 @@ public class Engine : MonoBehaviour {
 				Debug.Log("coal: " + coal);
 				Debug.Log("fuel: " + fuel);
 				Debug.Log("heat: " + heat);
-				Debug.Log("speed: " + train_controller.speed);
+				Debug.Log("speed: " + train_controller.local_speed);
 			}
 
 		}
@@ -75,11 +75,11 @@ public class Engine : MonoBehaviour {
 
 		//running the engine
 		float engine_force = heat * engine_efficiency * Time.deltaTime;
-		if (train_controller.target_speed > train_controller.speed && train_controller.speed > 0)
+		if (train_controller.target_speed > train_controller.local_speed && train_controller.local_speed > 0)
 		{
 			train_controller.AddForce(engine_force);
 		}
-		if(train_controller.target_speed < train_controller.speed && train_controller.speed < 0)
+		if(train_controller.target_speed < train_controller.local_speed && train_controller.local_speed < 0)
 		{
 			train_controller.AddForce(-engine_force);
 		}

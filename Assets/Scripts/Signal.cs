@@ -17,8 +17,8 @@ public class Signal : MonoBehaviour {
 		carriages_in_block = new List<GameObject>();
 
 		//add removing and adding carriages to the approriate events
-		opening_track.GetComponent<Track>().OnTrainCross += AddCarriage;
-		closing_track.GetComponent<Track>().OnTrainCross += RemoveCarriage;
+		opening_track.GetComponent<Track>().OnTrainEnter += AddCarriage;
+		closing_track.GetComponent<Track>().OnTrainEnter += RemoveCarriage;
 		UpdateState();
 	}
 

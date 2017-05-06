@@ -9,7 +9,7 @@ public class TrainController : MonoBehaviour {
 	public float top_speed;
 
 	[HideInInspector]
-	public float speed;
+	public float local_speed;
 	[HideInInspector]
 	public float target_speed = 0f;
 
@@ -53,13 +53,13 @@ public class TrainController : MonoBehaviour {
 
 	void Update()
 	{
-		speed = carriages[0].GetComponent<Rigidbody>().velocity.z;
+		local_speed = carriages[0].transform.InverseTransformDirection(carriages[0].GetComponent<Rigidbody>().velocity).z;
 
 		//changes the local forward velocity of each carriage to match the lead carriages speed
 		foreach (GameObject carriage in carriages)
 		{
-			Vector3 new_speed = carriage.transform.InverseTransformDirection(speed * Vector3.forward);
-			carriage.GetComponent<Rigidbody>().velocity = new_speed;
+			Vector3 world_speed = carriage.transform.TransformDirection(local_speed * Vector3.forward);
+			carriage.GetComponent<Rigidbody>().velocity = world_speed;
 		}
 	}
 
