@@ -11,6 +11,8 @@ public class Junction : MonoBehaviour {
 	public GameObject center_parent;
 	public GameObject right_parent;
 
+	private float initial_speed_direction;  //-1 or 1, depending on the sign of the velocity when entering the junction
+
 	private List<GameObject> carriages_in_junction;
 	private TrainController train_controller;
 
@@ -97,6 +99,7 @@ public class Junction : MonoBehaviour {
 
 		Debug.Log("direction is set to: " + direction);
 
+		initial_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
 
 		//turning off all tracks, and then only turn on appropriate track
 		foreach (string key in paths.Keys)
@@ -119,13 +122,13 @@ public class Junction : MonoBehaviour {
 		//adding events for the train being in the junction
 		if (entered_track == entrances["entrance"])
 		{
-			entrances["entrance"].GetComponent<Track>().OnTrainEnter += OpenEnter;
+			entrances["entrance"].GetComponent<Track>().OnTrainExit += OpenEnter;
 			entrances[direction].GetComponent<Track>().OnTrainExit += OpenExit;
 		}
 		else
 		{
 			entrances["entrance"].GetComponent<Track>().OnTrainExit += OpenExit;
-			entrances[direction].GetComponent<Track>().OnTrainEnter += OpenEnter;
+			entrances[direction].GetComponent<Track>().OnTrainExit += OpenEnter;
 		}
 
 	}
@@ -134,44 +137,64 @@ public class Junction : MonoBehaviour {
 	//OpenEnter and OpenExit are functions that listen to carriages entering and leaving a junction that has already been opened. As such, entered_track should be the track that is the entrance or exit, respectively
 	private void OpenEnter(GameObject entered_track, GameObject carriage)
 	{
-		carriages_in_junction.Add(carriage);
+		float carriage_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
+		if (carriage_speed_direction == initial_speed_direction)
+		{
+			carriages_in_junction.Add(carriage);
+		}
+		if(carriage_speed_direction != initial_speed_direction)
+		{
+			carriages_in_junction.Remove(carriage);
+		}
+		if (carriages_in_junction.Count == 0)  //When the junction is empty, call Reset on all active entrances
+		{
+			Reset();
+		}
+
 	}
 
 	private void OpenExit(GameObject entered_track, GameObject carriage)
 	{
-		carriages_in_junction.Remove(carriage);
-
-		if(carriages_in_junction.Count == 0)  //When the junction is empty, call Reset on all active entrances
+		float carriage_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
+		if (carriage_speed_direction == initial_speed_direction)
 		{
-			foreach(KeyValuePair<string, GameObject> entrance in entrances)
-			{
-				if(entrance.Value.activeSelf == true)
-				{
-					Reset(entrance.Value);
-					Debug.Log("reseting jucntion");
-				}
-			}
+			carriages_in_junction.Remove(carriage);
+		}
+		if (carriage_speed_direction != initial_speed_direction)
+		{
+			carriages_in_junction.Add(carriage);
+		}
+
+		if (carriages_in_junction.Count == 0)  //When the junction is empty, call Reset on all active entrances
+		{
+			Reset();
 		}
 	}
 
-	private void Reset(GameObject entered_track)
+	/// <summary>
+	/// Resets the entire junction back to it's normal state.
+	/// </summary>
+	private void Reset()
 	{
+		Debug.Log("resetting");
+		foreach (KeyValuePair<string, GameObject> entrance in entrances)
+		{
+			if (entrance.Value.activeSelf == true)
+			{
+				Track track_script = entrance.Value.GetComponent<Track>();
+				track_script.OnTrainExit -= OpenEnter;
+				track_script.OnTrainExit -= OpenExit;
 
-		//reset event listening
-		Track track_script = entered_track.GetComponent<Track>();
-		track_script.OnTrainEnter -= OpenEnter;
-		track_script.OnTrainExit -= OpenExit;
-
-		track_script.OnTrainEnter += Enter;
-
+				track_script.OnTrainEnter += Enter;
+			}
+		}
 		//turn deactivated paths back on
-		foreach(string key in paths.Keys)
+		foreach (string key in paths.Keys)
 		{
 			foreach (GameObject track in paths[key])
 			{
-				track.GetComponent<Collider>().enabled= true;
+				track.GetComponent<Collider>().enabled = true;
 			}
 		}
-
 	}
 }
