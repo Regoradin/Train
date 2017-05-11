@@ -27,6 +27,20 @@ public class Junction : MonoBehaviour {
 		paths = new Dictionary<string, List<GameObject>>();
 		entrances = new Dictionary<string, GameObject>();
 
+		//In case any of the paths aren't defined, sets them to center or right, whichever exists
+		if (!center_parent)
+		{
+			center_parent = right_parent;
+		}
+		if (!right_parent)
+		{
+			right_parent = center_parent;
+		}
+		if (!left_parent)
+		{
+			left_parent = center_parent;
+		}
+
 		//Sets up paths to each have their exit and the central entrance branch
 		paths["left"] = GetTracks(left_parent);
 		paths["center"] = GetTracks(center_parent);
@@ -43,11 +57,19 @@ public class Junction : MonoBehaviour {
 		entrances["center"] = center_parent;
 		entrances["right"] = right_parent;
 
-		//add events to listen for entraces to the junction
+		//Add events to listen for entraces to the junction. If blocks prevent double event assignment when there are not 3 exit paths
 		entrance_parent.GetComponent<Track>().OnTrainEnter += Enter;
 		left_parent.GetComponent<Track>().OnTrainEnter += Enter;
 		center_parent.GetComponent<Track>().OnTrainEnter += Enter;
+		if (left_parent == center_parent)
+		{
+			center_parent.GetComponent<Track>().OnTrainEnter -= Enter;
+		}
 		right_parent.GetComponent<Track>().OnTrainEnter += Enter;
+		if(right_parent == center_parent)
+		{
+			center_parent.GetComponent<Track>().OnTrainEnter -= Enter;
+		}
 
 
 	}
@@ -61,17 +83,16 @@ public class Junction : MonoBehaviour {
 		if (parent.tag == "Track")
 		{
 			tracks.Add(parent);
-		}
 
 		//builds a list of all the children that are tracks
-		foreach(Transform child in parent.transform)
-		{
-			if(child.tag == "Track")
+			foreach (Transform child in parent.transform)
 			{
-				tracks.Add(child.gameObject);
+				if (child.tag == "Track")
+				{
+					tracks.Add(child.gameObject);
+				}
 			}
 		}
-
 		return tracks;
 	}
 
@@ -140,6 +161,7 @@ public class Junction : MonoBehaviour {
 		float carriage_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
 		if (carriage_speed_direction == initial_speed_direction)
 		{
+			Debug.Log("entering " + entered_track.name);
 			carriages_in_junction.Add(carriage);
 		}
 		if(carriage_speed_direction != initial_speed_direction)
@@ -158,6 +180,7 @@ public class Junction : MonoBehaviour {
 		float carriage_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
 		if (carriage_speed_direction == initial_speed_direction)
 		{
+			Debug.Log("Exiting " + entered_track.name);
 			carriages_in_junction.Remove(carriage);
 		}
 		if (carriage_speed_direction != initial_speed_direction)
