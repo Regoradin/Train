@@ -8,6 +8,9 @@ public class DirectionController : MonoBehaviour {
 
 	public string initial_direction;
 
+	private bool in_area = false;
+	private Collider other_collider;
+
 	private Dictionary<string, float> angles;
 
 	void Start() {
@@ -22,31 +25,42 @@ public class DirectionController : MonoBehaviour {
 		ChangeDirection(initial_direction);
 	}
 
-	void OnTriggerStay(Collider other) {
-		if (other.tag == "Player")
+	private void OnTriggerEnter(Collider other)
+	{
+		other_collider = other;
+		in_area = true;
+	}
+	private void OnTriggerExit(Collider other)
+	{
+		in_area = false;
+	}
+
+	void Update() {
+		if (in_area)
 		{
-			if (Input.GetButtonDown("train_left"))
+			if (other_collider.tag == "Player")
 			{
-				Debug.Log("lefting");
-				if (train_controller.Direction == "right")
+				if (Input.GetButtonDown("train_left"))
 				{
-					ChangeDirection("center");
+					if (train_controller.Direction == "right")
+					{
+						ChangeDirection("center");
+					}
+					else if (train_controller.Direction == "center")
+					{
+						ChangeDirection("left");
+					}
 				}
-				else if(train_controller.Direction == "center")
+				if (Input.GetButtonDown("train_right"))
 				{
-					ChangeDirection("left");
-				}
-			}
-			if (Input.GetButtonDown("train_right"))
-			{
-				Debug.Log("righting");
-				if (train_controller.Direction == "left")
-				{
-					ChangeDirection("center");
-				}
-				else if(train_controller.Direction == "center")
-				{
-					ChangeDirection("right");
+					if (train_controller.Direction == "left")
+					{
+						ChangeDirection("center");
+					}
+					else if (train_controller.Direction == "center")
+					{
+						ChangeDirection("right");
+					}
 				}
 			}
 		}
