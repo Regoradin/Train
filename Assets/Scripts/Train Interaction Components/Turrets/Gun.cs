@@ -10,15 +10,37 @@ public class Gun : MonoBehaviour {
 	public float shot_reload_time;
 	private float shot_last_time = 0;
 
+	public float round_size;
+	private float ammo;
+	public float round_reload_time;
+
 	public float muzzle_velocity;
+
+	void Start()
+	{
+		ammo = round_size;
+	}
 
 	void Update()
 	{
 		if (seat.Seated)
 		{
-			if (Input.GetKey("mouse 0"))
+			if (Input.GetButton("Fire1"))
 			{
-				Shoot(bullet);
+				if (ammo > 0)
+				{
+					Shoot(bullet);
+				}
+				else
+				{
+					Debug.Log("Need to reload!");
+				}
+			}
+			if (Input.GetButtonDown("Reload"))
+			{
+				Debug.Log("Reloading");
+				//this will probably have to change to incorporate animations
+				Invoke("Reload", round_reload_time);
 			}
 		}
 	}
@@ -32,13 +54,19 @@ public class Gun : MonoBehaviour {
 
 			Vector3 velocity = Vector3.forward * muzzle_velocity;
 			velocity = transform.TransformDirection(velocity);
-
 			new_bullet.GetComponent<Rigidbody>().velocity = velocity;
 
 			new_bullet.GetComponent<Bullet>().Invoke("ActivateCollider", .5f);
 
+			ammo -= 1;
 			shot_last_time = Time.time;
 		}
+	}
+
+	void Reload()
+	{
+		ammo = round_size;
+		Debug.Log("Reloaded");
 	}
 
 }
