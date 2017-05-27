@@ -27,7 +27,6 @@ public class Seat : MonoBehaviour {
 				//attaching player to seat
 				if (seated == false)
 				{
-					Debug.Log("seating");
 					previous_transform = other.transform;
 					other.transform.SetParent(transform);
 
@@ -42,7 +41,6 @@ public class Seat : MonoBehaviour {
 
 				else if(seated == true)
 				{
-					Debug.Log("deseating");
 					other.transform.SetParent(previous_transform);
 
 					seated = false;
