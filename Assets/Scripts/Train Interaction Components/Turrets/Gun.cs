@@ -49,14 +49,12 @@ public class Gun : MonoBehaviour {
 	{
 		if (Time.time > shot_reload_time + shot_last_time)
 		{
-			//this currently starts the bullet in the middle of the gun which causes problems if the collider is turned on, roundabout solutions seem like the way to go
+			//this currently starts the bullet in the middle of the gun which causes problems if the collider is turned on and the gun itself is damagable
 			GameObject new_bullet = Instantiate(bullet, transform.position, transform.rotation);
 
 			Vector3 velocity = Vector3.forward * muzzle_velocity;
 			velocity = transform.TransformDirection(velocity);
 			new_bullet.GetComponent<Rigidbody>().velocity = velocity;
-
-			new_bullet.GetComponent<Bullet>().Invoke("ActivateCollider", .5f);
 
 			ammo -= 1;
 			shot_last_time = Time.time;

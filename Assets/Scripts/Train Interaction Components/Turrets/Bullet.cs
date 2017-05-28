@@ -4,8 +4,5 @@ using UnityEngine;
 
 public class Bullet : MonoBehaviour {
 
-	public void ActivateCollider()
-	{
-		GetComponent<Collider>().enabled = true;
-	}
+	//this would be where all the fun effects and stuff for various bullets would be stored (burning, graphical effects, homing stuff, etc.)
 }
