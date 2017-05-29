@@ -118,7 +118,6 @@ public class Junction : MonoBehaviour {
 			direction = "right";
 		}
 
-		Debug.Log("direction is set to: " + direction);
 
 		initial_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
 
@@ -161,7 +160,6 @@ public class Junction : MonoBehaviour {
 		float carriage_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
 		if (carriage_speed_direction == initial_speed_direction)
 		{
-			Debug.Log("entering " + entered_track.name);
 			carriages_in_junction.Add(carriage);
 		}
 		if(carriage_speed_direction != initial_speed_direction)
@@ -180,7 +178,6 @@ public class Junction : MonoBehaviour {
 		float carriage_speed_direction = Mathf.Sign(carriage.GetComponentInParent<TrainController>().local_speed);
 		if (carriage_speed_direction == initial_speed_direction)
 		{
-			Debug.Log("Exiting " + entered_track.name);
 			carriages_in_junction.Remove(carriage);
 		}
 		if (carriage_speed_direction != initial_speed_direction)
@@ -199,7 +196,6 @@ public class Junction : MonoBehaviour {
 	/// </summary>
 	private void Reset()
 	{
-		Debug.Log("resetting");
 		foreach (KeyValuePair<string, GameObject> entrance in entrances)
 		{
 			if (entrance.Value.activeSelf == true)

@@ -26,6 +26,11 @@ public class SpeedController : MonoBehaviour {
 			{
 				Debug.Log("target_speed: " + train_controller.target_speed);
 			}
+			if (Input.GetKeyDown("x"))
+			{
+				train_controller.target_speed = 0;
+				Debug.Log("Stopping train");
+			}
 
 			//applying breaks
 			if (train_controller.local_speed > train_controller.target_speed && train_controller.target_speed > 0)

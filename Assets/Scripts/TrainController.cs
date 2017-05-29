@@ -54,7 +54,17 @@ public class TrainController : MonoBehaviour {
 	void Update()
 	{
 		local_speed = carriages[0].transform.InverseTransformDirection(carriages[0].GetComponent<Rigidbody>().velocity).z;
-
+		//completely stops the train if it is below some stupid threshold for unimanginably small speeds, and no acceleration is being requested
+		if(Mathf.Abs(local_speed) < .001 && target_speed == 0)
+		{
+			foreach(GameObject carriage in carriages)
+			{
+				carriage.GetComponent<Rigidbody>().velocity = Vector3.zero;
+			}
+			local_speed = 0;
+			return;
+		}
+		
 		//changes the local forward velocity of each carriage to match the lead carriages speed
 		foreach (GameObject carriage in carriages)
 		{

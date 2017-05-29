@@ -19,7 +19,8 @@ public class CargoController : MonoBehaviour {
 
 		cargos = new List<Cargo>();
 	}
-	public void AddCargo(Cargo new_cargo)
+
+	public void AddCargo(Cargo new_cargo)
 	{
 		//adds the total volume of all of the cargo in the carriage
 		float total_cargo_volume = 0;
@@ -38,11 +39,14 @@ public class CargoController : MonoBehaviour {
 		//and update total_cargo_volume and appearance of the carriage
 		total_cargo_volume += new_cargo.Volume;
 		UpdateAppearance();
-	}	/// <summary>
+	}
+
+	/// <summary>
 	/// removes a certain cargo object from the carriage cargo list. returns that cargo object. intended usage (i think): have some GUI elements made from the cargo list, each button having a cargo item assosciated with them. When clicked, it calls this fucntion.
 	/// </summary>
 	/// <param name="requested_cargo"> the cargo to be removed</param>
-	/// <returns></returns>	public Cargo RemoveCargo(Cargo requested_cargo)
+	/// <returns></returns>
+	public Cargo RemoveCargo(Cargo requested_cargo)
 	{
 		//remove unwanted cargo from the list
 		cargos.Remove(requested_cargo);
@@ -53,7 +57,8 @@ public class CargoController : MonoBehaviour {
 
 		//and give it to whomever is trying to take it
 		return requested_cargo;
-	}
+	}
+
 	void UpdateAppearance()
 	{
 		float total_cargo_volume = 0;
