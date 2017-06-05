@@ -12,8 +12,6 @@ public class PlayerUI : MonoBehaviour {
 
 	private PlayerInventory inventory;
 
-	public float health_number; //these will need to be grabbed from an outside script once it exists
-	public float max_health;
 	public float health_offset;
 
 	void Start()
@@ -27,7 +25,7 @@ public class PlayerUI : MonoBehaviour {
 	{
 		money.text = "$" + inventory.Money;
 
-		float health_percent = health_number / max_health;
+		float health_percent = inventory.Health / inventory.max_health;
 
 		health.rectTransform.sizeDelta = new Vector2((Screen.width - health_offset) * health_percent, health.rectTransform.rect.height);
 
