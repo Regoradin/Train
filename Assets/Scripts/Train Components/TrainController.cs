@@ -6,6 +6,9 @@ public class TrainController : MonoBehaviour {
 
 	private List<GameObject> carriages;
 
+	[HideInInspector]
+	public List<CargoController> cargo_controllers;
+
 	public float top_speed;
 
 	[HideInInspector]
@@ -39,11 +42,17 @@ public class TrainController : MonoBehaviour {
 	{
 		//builds a list of all the carriages in the same order as they are in the inspector
 		carriages = new List<GameObject>();
+		cargo_controllers = new List<CargoController>();
+
 		foreach (Transform child in transform)
 		{
 			if(child.gameObject.tag == "Carriage")
 			{
 				carriages.Add(child.gameObject);
+				if (child.gameObject.GetComponent<CargoController>())
+				{
+					cargo_controllers.Add(child.gameObject.GetComponent<CargoController>());
+				}
 			}
 		}
 

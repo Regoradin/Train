@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class CargoController : MonoBehaviour {
 
-	private Dictionary<string, int> cargoes;
+	private Dictionary<string, int> cargoes;    //list of types and amounts of cargo
 
 	void Start()
 	{
@@ -12,18 +12,18 @@ public class CargoController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Adds one unit of cargo.
+	/// Adds amount units of cargo.
 	/// </summary>
 	/// <param name="added_cargo"></param>
-	public void AddCargo(string added_cargo)
+	public void AddCargo(string added_cargo, int amount)
 	{
 		if (cargoes.ContainsKey(added_cargo))
 		{
-			cargoes[added_cargo] += 1;
+			cargoes[added_cargo] += amount;
 		}
 		else
 		{
-			cargoes[added_cargo] = 1;
+			cargoes[added_cargo] = amount;
 		}
 
 		UpdateCarriages();
@@ -31,16 +31,16 @@ public class CargoController : MonoBehaviour {
 
 
 	/// <summary>
-	/// Removes one unit of cargo.
+	/// Removes amount units of cargo.
 	/// </summary>
 	/// <param name="removed_cargo"></param>
-	public void RemoveCargo(string removed_cargo)
+	public void RemoveCargo(string removed_cargo, int amount)
 	{
 		if (cargoes.ContainsKey(removed_cargo))
 		{
-			cargoes[removed_cargo] -= 1;
+			cargoes[removed_cargo] -= amount;
 		}
-		if(cargoes[removed_cargo] < 1)
+		if(cargoes[removed_cargo] < amount)
 		{
 			//clears the dictionary of any nonexistant cargoes
 			cargoes.Remove(removed_cargo);
