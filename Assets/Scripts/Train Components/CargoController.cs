@@ -43,7 +43,7 @@ public class CargoController : MonoBehaviour {
 		if(cargoes[removed_cargo] < amount)
 		{
 			//clears the dictionary of any nonexistant cargoes
-			cargoes.Remove(removed_cargo);
+			cargoes[removed_cargo] = 0;
 		}
 
 		UpdateCarriages();
@@ -55,7 +55,7 @@ public class CargoController : MonoBehaviour {
 
 		foreach (string key in cargoes.Keys)
 		{
-			Debug.Log("You now have " + cargoes[key] + " of " + key);
+			Debug.Log("You now have " + cargoes[key] + " of " + key + " in " + name);
 		}
 	}
 	
