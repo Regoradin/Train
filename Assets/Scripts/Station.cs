@@ -112,7 +112,8 @@ public class Station : MonoBehaviour {
 	{
 		if (active_cargo)
 		{
-			active_cargo.AddCargo(type, amount);
+			//the 1 here is the value, eventually make that dependent on the type of material and the station's individual economy.
+			active_cargo.AddCargo(type, amount,1);
 		}
 	}
 
@@ -120,7 +121,7 @@ public class Station : MonoBehaviour {
 	{
 		if (active_cargo)
 		{
-			active_cargo.RemoveCargo(type, amount);
+			active_cargo.RemoveCargo(type, amount,1);
 		}
 	}
 

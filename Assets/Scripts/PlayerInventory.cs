@@ -40,12 +40,21 @@ public class PlayerInventory : MonoBehaviour {
 		{
 			if (value >= 0)
 			{
-				money = value;
+				//rounds money to the nearest .01
+				money = Mathf.Round(value * 100)/100;
 			}
 			else
 			{
 				money = 0;
 			}
 		}
+	}
+
+	//probably will be replaced with a real system
+	public float initial_money;
+
+	void Start()
+	{
+		money = initial_money;
 	}
 }
