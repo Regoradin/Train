@@ -87,7 +87,6 @@ public class CargoController : MonoBehaviour {
 		{
 			total_amount += cargoes[key];
 		}
-		Debug.Log(total_amount + " " + max_amount + " " + total_amount / max_amount);
 		crate.transform.localScale = new Vector3(crate.transform.localScale.x, filled_height * (total_amount/max_amount), crate.transform.localScale.z);
 
 	}
