@@ -11,22 +11,19 @@ public class Store : stationUI{
 	private CargoController active_cargo;
 	private int amount;
 
-	private List<GameObject> carriages_in_station;
-
-	void Start()
-	{
-		carriages_in_station = new List<GameObject>();
-	}
 
 	public override void SetupUI()
 	{
-		//setting up the GUI button to select the active cargo carriage. Only happens if this is the first carriage in the station, to prevent multiple setups. For some reason two sets of buttons seem to be formed, but that shouldn't affect anything... probably...
-		if (carriages_in_station.Count == 0)
+		//clearing existant GUI buttons.
+		foreach(Transform button in cargo_toggle_group.transform)
 		{
-			for (int i = 0; i < train.cargo_controllers.Count; i++)
-			{
-				ToggleSetup(i);
-			}
+			Destroy(button.gameObject);
+		}
+
+		//setting up the GUI button to select the active cargo carriage. Only happens if this is the first carriage in the station, to prevent multiple setups. For some reason two sets of buttons seem to be formed, but that shouldn't affect anything... probably...
+		for (int i = 0; i < train.cargo_controllers.Count; i++)
+		{
+			ToggleSetup(i);
 		}
 	}
 
