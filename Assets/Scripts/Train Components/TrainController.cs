@@ -103,13 +103,11 @@ public class TrainController : MonoBehaviour {
 	{
 		carriages.Clear();
 		cargo_controllers.Clear();
-		Debug.Log("Building lists for " + name);
 
 		foreach (Transform child in transform)
 		{
 			if (child.gameObject.tag == "Carriage")
 			{
-				Debug.Log(child.name);
 				carriages.Add(child.gameObject);
 
 				if (child.gameObject.GetComponent<CargoController>())
@@ -131,11 +129,9 @@ public class TrainController : MonoBehaviour {
 
 		//train_offset is the offset between the center of the carriage and the end point, aligned to the middle in the x and y. carriage_offset is the same thing, but for the new carriage.
 		Vector3 train_offset = last_carriage.GetComponent<Collider>().bounds.extents;
-		train_offset.Scale(Vector3.right);
+		train_offset.Scale(Vector3.forward);
 		Vector3 carriage_offset = new_carriage.GetComponent<Collider>().bounds.extents;
 		carriage_offset.Scale(Vector3.forward);
-		//because the carriages locally are z-forward whereas globally the train is x-forward for some ungodly reason.
-		carriage_offset = new Vector3(carriage_offset.z, 0, 0);
 
 		Vector3 carriage_position = last_carriage.transform.position - train_offset - carriage_offset;
 
@@ -146,11 +142,11 @@ public class TrainController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Takes out the specified carriage from the train. If specified, reconnects the train if a middle carriage is being removed
+	/// Takes out the specified carriage from the train. Returns the parent gameobject of the new back half of the train.
 	/// </summary>
 	/// <param name="carriage"></param>
 	/// <param name="keep_train_whole">If true, rebuild the train to one whole connected train</param>
-	public void RemoveCarriage(GameObject removed_carriage)
+	public GameObject RemoveCarriage(GameObject removed_carriage)
 	{
 		int index = carriages.IndexOf(removed_carriage);
 
@@ -173,7 +169,24 @@ public class TrainController : MonoBehaviour {
 		BuildTrainLists();
 		new_train_controller.BuildTrainLists();
 
-		Debug.Log("carriages " + carriages.Count);
-		Debug.Log("new_train carriages " + new_train_controller.carriages.Count);
+		return new_train;
+	}
+
+	/// <summary>
+	/// Puts the carriages from other_train onto the end of this train.
+	/// </summary>
+	/// <param name="other_train"></param>
+	public void CombineTrains(TrainController other_train)
+	{
+		//move the carriages over to the right train
+		foreach(GameObject other_carriage in other_train.carriages)
+		{
+			AddCarriage(other_carriage);
+			DestroyImmediate(other_carriage);
+		}
+
+		//destroy the train that is being combined
+		Destroy(other_train.gameObject);
+		BuildTrainLists();
 	}
 }

@@ -19,7 +19,9 @@ public class Railyard : stationUI{
 	public void RemoveCarriage()
 	{
 		GameObject selected_carriage = added_carriage; //make this eventually actually pick a carriage
-		train.RemoveCarriage(selected_carriage);
+		GameObject rear_train = train.RemoveCarriage(selected_carriage);
+		train.CombineTrains(rear_train.GetComponent<TrainController>());
+		
 	}
 
 }
