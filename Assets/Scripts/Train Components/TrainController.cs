@@ -105,6 +105,7 @@ public class TrainController : MonoBehaviour {
 			if (child.gameObject.tag == "Carriage")
 			{
 				carriages.Add(child.gameObject);
+
 				if (child.gameObject.GetComponent<CargoController>())
 				{
 					cargo_controllers.Add(child.gameObject.GetComponent<CargoController>());
@@ -114,13 +115,11 @@ public class TrainController : MonoBehaviour {
 	}
 
 	/// <summary>
-	/// Add a carriage onto the end of the train.
+	/// Add a new carriage onto the end of the train.
 	/// </summary>
 	/// <param name="carriage"></param>
 	public void AddCarriage(GameObject carriage)
 	{
-		Debug.Log("Adding carriage");
-
 		GameObject last_carriage = carriages[carriages.Count - 1];
 		GameObject new_carriage = Instantiate(carriage, transform);
 
@@ -128,11 +127,11 @@ public class TrainController : MonoBehaviour {
 		Vector3 train_offset = last_carriage.GetComponent<Collider>().bounds.extents;
 		train_offset.Scale(Vector3.right);
 		Vector3 carriage_offset = new_carriage.GetComponent<Collider>().bounds.extents;
-		carriage_offset.Scale(Vector3.right);
+		carriage_offset.Scale(Vector3.forward);
+		//because the carriages locally are z-forward whereas globally the train is x-forward for some ungodly reason.
+		carriage_offset = new Vector3(carriage_offset.z, 0, 0);
 
-		float gap = 3;
-
-		Vector3 carriage_position = last_carriage.transform.position - train_offset - carriage_offset - gap * Vector3.right;
+		Vector3 carriage_position = last_carriage.transform.position - train_offset - carriage_offset;
 
 		new_carriage.transform.position = carriage_position;
 		new_carriage.transform.rotation = last_carriage.transform.rotation;
@@ -145,9 +144,39 @@ public class TrainController : MonoBehaviour {
 	/// </summary>
 	/// <param name="carriage"></param>
 	/// <param name="keep_train_whole">If true, rebuild the train to one whole connected train</param>
-	public void RemoveCarriage(GameObject carriage, bool keep_train_whole)
+	public void RemoveCarriage(GameObject removed_carriage, bool keep_train_whole)
 	{
-		//Make the carriage not exist
+		int index = carriages.IndexOf(removed_carriage);
+
+		//makes and exact copy of this train and runs Start() to ensure that everything is set up properly
+		GameObject new_train = Instantiate(gameObject, transform.position, transform.rotation);
+		TrainController new_train_controller = new_train.GetComponent<TrainController>();
+		new_train_controller.Start();
+
+		//loops through the new_train and deletes all the carriages from the start, up to and including the removed one
+		for (int i = 0; i <= index; i++)
+		{
+			Destroy(new_train_controller.carriages[i]);
+		}
+		//does the same for the old train. If the trains are being combined, all carriages that are not the one being removed will be combined with the main train here.
+		Debug.Log("Count is " + carriages.Count);
+		for(int i = index; i < carriages.Count -1; i++)
+		{
+			Debug.Log("i is " + i);
+			Destroy(carriages[i]);
+
+			if(keep_train_whole && i != index)
+			{
+				Debug.Log("Added carriage " + i);
+				AddCarriage(new_train_controller.carriages[i]);
+				//Destroy(new_train_controller.carriages[i]);
+			}
+		}
+		
 		BuildTrainLists();
+		new_train_controller.BuildTrainLists();
+
+		Debug.Log("carriages " + carriages.Count);
+		Debug.Log("new_train carriages " + new_train_controller.carriages.Count);
 	}
 }

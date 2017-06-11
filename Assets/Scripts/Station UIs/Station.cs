@@ -37,7 +37,6 @@ public class Station : MonoBehaviour{
 			UI_script.train = train;
 			if (carriages_in_station.Count == 1)
 			{
-				Debug.Log("setting up UI for " + other.name);
 				UI_script.SetupUI();
 			}
 		}
