@@ -57,6 +57,7 @@ public class TrainController : MonoBehaviour {
 		{
 			foreach(GameObject carriage in carriages)
 			{
+				if(carriage)//making sure it still exists in case the train is in the process of removing it
 				carriage.GetComponent<Rigidbody>().velocity = Vector3.zero;
 			}
 			local_speed = 0;
@@ -66,8 +67,11 @@ public class TrainController : MonoBehaviour {
 		//changes the local forward velocity of each carriage to match the lead carriages speed
 		foreach (GameObject carriage in carriages)
 		{
-			Vector3 world_speed = carriage.transform.TransformDirection(local_speed * Vector3.forward);
-			carriage.GetComponent<Rigidbody>().velocity = world_speed;
+			if (carriage)//making sure it still exists in case the train is in the process of removing it
+			{
+				Vector3 world_speed = carriage.transform.TransformDirection(local_speed * Vector3.forward);
+				carriage.GetComponent<Rigidbody>().velocity = world_speed;
+			}
 		}
 	}
 
@@ -99,11 +103,13 @@ public class TrainController : MonoBehaviour {
 	{
 		carriages.Clear();
 		cargo_controllers.Clear();
+		Debug.Log("Building lists for " + name);
 
 		foreach (Transform child in transform)
 		{
 			if (child.gameObject.tag == "Carriage")
 			{
+				Debug.Log(child.name);
 				carriages.Add(child.gameObject);
 
 				if (child.gameObject.GetComponent<CargoController>())
@@ -144,7 +150,7 @@ public class TrainController : MonoBehaviour {
 	/// </summary>
 	/// <param name="carriage"></param>
 	/// <param name="keep_train_whole">If true, rebuild the train to one whole connected train</param>
-	public void RemoveCarriage(GameObject removed_carriage, bool keep_train_whole)
+	public void RemoveCarriage(GameObject removed_carriage)
 	{
 		int index = carriages.IndexOf(removed_carriage);
 
@@ -156,21 +162,12 @@ public class TrainController : MonoBehaviour {
 		//loops through the new_train and deletes all the carriages from the start, up to and including the removed one
 		for (int i = 0; i <= index; i++)
 		{
-			Destroy(new_train_controller.carriages[i]);
+			DestroyImmediate(new_train_controller.carriages[i]);
 		}
 		//does the same for the old train. If the trains are being combined, all carriages that are not the one being removed will be combined with the main train here.
-		Debug.Log("Count is " + carriages.Count);
-		for(int i = index; i < carriages.Count -1; i++)
+		for(int i = index; i < carriages.Count; i++)
 		{
-			Debug.Log("i is " + i);
-			Destroy(carriages[i]);
-
-			if(keep_train_whole && i != index)
-			{
-				Debug.Log("Added carriage " + i);
-				AddCarriage(new_train_controller.carriages[i]);
-				//Destroy(new_train_controller.carriages[i]);
-			}
+			DestroyImmediate(carriages[i]);
 		}
 		
 		BuildTrainLists();
