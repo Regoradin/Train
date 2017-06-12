@@ -4,24 +4,25 @@ using UnityEngine;
 
 public class Railyard : stationUI{
 
-	public GameObject added_carriage;
+	public GameObject carriage_to_remove;//temporary solution
 
 	public override void SetupUI()
 	{
 
 	}
 
-	public void AddCarriage()
+	public void AddCarriage(GameObject added_carriage)
 	{
 		train.AddCarriage(added_carriage);  //eventually add some logic for removing a specific carriage
 	}
 
-	public void RemoveCarriage()
+	public void RemoveCarriage(GameObject selected_carriage)
 	{
-		GameObject selected_carriage = added_carriage; //make this eventually actually pick a carriage
-		GameObject rear_train = train.RemoveCarriage(selected_carriage);
+		//GameObject rear_train = train.RemoveCarriage(selected_carriage);
+		GameObject rear_train = train.RemoveCarriage(carriage_to_remove);//temp, replace with above line
 		train.CombineTrains(rear_train.GetComponent<TrainController>());
-		
 	}
+
+
 
 }

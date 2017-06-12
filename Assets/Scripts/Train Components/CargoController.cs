@@ -20,6 +20,8 @@ public class CargoController : MonoBehaviour {
 		inv = GameObject.Find("Player").GetComponent<PlayerInventory>();
 
 		filled_height = crate.transform.localScale.y;
+
+		UpdateCarriage();
 	}
 
 	/// <summary>
@@ -45,7 +47,7 @@ public class CargoController : MonoBehaviour {
 		{
 			Debug.Log("You do not have enough money");
 		}
-		UpdateCarriages();
+		UpdateCarriage();
 	}
 
 
@@ -70,12 +72,12 @@ public class CargoController : MonoBehaviour {
 				cargoes[removed_cargo] = 0;
 			}
 		}
-		UpdateCarriages();
+		UpdateCarriage();
 	}
 
-	void UpdateCarriages()
+	void UpdateCarriage()
 	{
-		//updates the weight and speed and such of the various carriages. This is probably where stuff like cargo space and the like will be dealt with as well
+		//update the weight and speed and such of the carriage eventually.
 
 		foreach (string key in cargoes.Keys)
 		{
