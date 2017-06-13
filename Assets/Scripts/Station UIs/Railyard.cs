@@ -6,6 +6,9 @@ public class Railyard : stationUI{
 
 	public GameObject carriage_to_remove;//temporary solution
 
+	[HideInInspector]
+	public bool dragging;
+
 	public override void SetupUI()
 	{
 
