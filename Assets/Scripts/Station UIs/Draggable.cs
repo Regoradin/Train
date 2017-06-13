@@ -11,11 +11,11 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 
 	private Vector3 original_position;
 
-	private Dropsystem dropsys;
+	private Railyard railyard;
 
 	private void Start()
 	{
-		dropsys = GetComponentInParent<Dropsystem>();
+		railyard = GetComponentInParent<Railyard>();
 
 		rt = transform as RectTransform;
 
@@ -34,7 +34,8 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 
 	public void OnEndDrag(PointerEventData data)
 	{
-		dropsys.Drop(data);
+		//makes the railyard calculate if it is in a drop zone and what needs to happen based on that
+		railyard.Drop(data);
 	}
 
 	public void Reset()

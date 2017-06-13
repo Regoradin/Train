@@ -4,6 +4,13 @@ using UnityEngine;
 
 public class TrainController : MonoBehaviour {
 
+	public List<GameObject> Carriages
+	{
+		get
+		{
+			return carriages;
+		}
+	}
 	private List<GameObject> carriages;
 
 	[HideInInspector]

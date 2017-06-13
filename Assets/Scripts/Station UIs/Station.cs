@@ -7,9 +7,9 @@ public class Station : MonoBehaviour{
 	private Camera station_camera;
 	private Camera player_camera;
 
-	private TrainController train;
+	private stationUI UI_script;
 
-	public stationUI UI_script;
+	private TrainController train;
 
 	private bool train_in_station;
 	private List<GameObject> carriages_in_station;
@@ -17,6 +17,8 @@ public class Station : MonoBehaviour{
 	void Start ()
 	{
 		player_camera = GameObject.Find("Player").GetComponentInChildren<Camera>();
+
+		UI_script = GetComponentInChildren<stationUI>();
 
 		station_camera = GetComponentInChildren<Camera>();  //camera has to start enabled to get picked up by the script
 		station_camera.enabled = false;
@@ -32,9 +34,9 @@ public class Station : MonoBehaviour{
 			carriages_in_station.Add(other.gameObject);
 
 			train = other.GetComponentInParent<TrainController>();
+			UI_script.train = train;
 			train_in_station = true;
 
-			UI_script.train = train;
 			if (carriages_in_station.Count == 1)
 			{
 				UI_script.SetupUI();

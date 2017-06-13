@@ -14,6 +14,8 @@ public class CarriageController : MonoBehaviour {
 	[HideInInspector]
 	public string direction;
 
+	public Sprite icon;
+
 	void Start()
 	{
 		rb = GetComponent<Rigidbody>();
