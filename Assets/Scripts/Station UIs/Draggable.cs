@@ -31,7 +31,7 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 	public void OnBeginDrag(PointerEventData data)
 	{
 		transform.SetParent(railyard.UI.transform);
-		transform.SetAsFirstSibling();
+		transform.SetAsLastSibling();
 	}
 
 	public void OnDrag(PointerEventData data)
