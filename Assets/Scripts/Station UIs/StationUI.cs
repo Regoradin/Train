@@ -8,7 +8,9 @@ public abstract class stationUI : MonoBehaviour {
 
 	public GameObject UI;
 
-	//this is intended to set up any procedurally generated UI elements
+	/// <summary>
+	/// This is called whenever a train enters a station, and should set up any procedurally generated UI elements.
+	/// </summary>
 	public abstract void SetupUI();
 
 

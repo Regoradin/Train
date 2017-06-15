@@ -2,16 +2,20 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using UnityEngine.UI;
 
 public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler{
 
-	RectTransform rt;
+	private RectTransform rt;
 
+	[HideInInspector]
 	public GameObject carriage;
 
 	private Vector3 original_position;
 
 	private Railyard railyard;
+
+	private Transform original_parent;
 
 	private void Start()
 	{
@@ -19,12 +23,15 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 
 		rt = transform as RectTransform;
 
-		original_position = rt.position;
+		original_position = rt.localPosition;
+		original_parent = transform.parent;
+		GetComponent<Image>().sprite = carriage.GetComponent<CarriageController>().icon;
 	}
 
 	public void OnBeginDrag(PointerEventData data)
 	{
-		Debug.Log("beigninsdfo dragging");
+		transform.SetParent(railyard.UI.transform);
+		transform.SetAsFirstSibling();
 	}
 
 	public void OnDrag(PointerEventData data)
@@ -40,6 +47,7 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 
 	public void Reset()
 	{
-		rt.position = original_position;
+		transform.SetParent(original_parent);
+		rt.localPosition = original_position;
 	}
 }

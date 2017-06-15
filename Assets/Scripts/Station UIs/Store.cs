@@ -36,6 +36,7 @@ public class Store : stationUI{
 		GameObject cargo_toggle_object = Instantiate(cargo_toggle_prefab);
 		Toggle cargo_toggle = cargo_toggle_object.GetComponent<Toggle>();
 		cargo_toggle_object.transform.SetParent(cargo_toggle_group.transform);
+		
 		//setting up cargo_toggle
 		cargo_toggle_object.GetComponent<RectTransform>().localPosition = new Vector3(0, -i * 20, 0);
 		cargo_toggle.group = cargo_toggle_group;
