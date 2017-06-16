@@ -14,7 +14,7 @@ public class CarriageController : MonoBehaviour {
 	[HideInInspector]
 	public string direction;
 
-	public Sprite icon;
+	public Sprite sprite;
 
 	void Start()
 	{

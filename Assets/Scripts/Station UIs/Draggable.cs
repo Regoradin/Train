@@ -25,7 +25,7 @@ public class Draggable : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDra
 
 		original_position = rt.localPosition;
 		original_parent = transform.parent;
-		GetComponent<Image>().sprite = carriage.GetComponent<CarriageController>().icon;
+		GetComponent<Image>().sprite = carriage.GetComponent<CarriageController>().sprite;
 	}
 
 	public void OnBeginDrag(PointerEventData data)

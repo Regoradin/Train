@@ -6,7 +6,7 @@ using UnityEngine.EventSystems;
 
 public class Railyard : stationUI{
 
-	public GameObject carriage_to_remove;//temporary solution
+	private GameObject selected_carriage;
 
 	public List<GameObject> garage; //all of the carriages that are in the garage
 
@@ -17,8 +17,10 @@ public class Railyard : stationUI{
 	private List<GameObject> draggables;
 	public float icon_offset;
 
-	//stuff for managing the drag-and-drop
 	public GameObject dropspot;
+	public GameObject train_scroll_view;
+	private GameObject train_scroll_content;
+
 	private RectTransform rt;
 
 	[HideInInspector]
@@ -30,19 +32,15 @@ public class Railyard : stationUI{
 
 		//garage = new List<GameObject>();
 		draggables = new List<GameObject>();
+
 		garage_scroll_content = garage_scroll_view.GetComponent<ScrollRect>().content.gameObject;
-		foreach (Transform child in garage_scroll_view.transform)
-		{
-			if(child.name == "Content")
-			{
-				garage_scroll_content = child.gameObject;
-			}
-		}
+		train_scroll_content = train_scroll_view.GetComponent<ScrollRect>().content.gameObject;
+
 	}
 
 	public override void SetupUI()
 	{
-		Debug.Log("setting up railyard");
+		//setting up the garage button area
 		//get rid of old buttons
 		foreach(GameObject icon in draggables)
 		{
@@ -103,6 +101,36 @@ public class Railyard : stationUI{
 		RectTransform content_rect = garage_scroll_content.GetComponent<RectTransform>();
 		content_rect.sizeDelta = new Vector2(content_rect.sizeDelta.x, height);
 
+
+		//setting up the train display - This is all based off of the dimensions of dropspot for now
+		for(int i = 0; i < train.Carriages.Count; i++)
+		{
+			GameObject button_object = Instantiate(new GameObject());
+			RectTransform button_rt = button_object.AddComponent<RectTransform>();
+			Button button = button_object.AddComponent<Button>();
+			Image button_image = button_object.AddComponent<Image>();
+
+
+			button.transform.SetParent(train_scroll_content.transform);
+
+			button_image.sprite = train.Carriages[i].GetComponent<CarriageController>().sprite;
+
+			//adds functionality. Maybe at some point change this to a toggle instead of button, but maybe also change the toggle thing on the store script to be buttons, idk
+			button.onClick.AddListener(delegate 
+			{
+				Debug.Log("selected_carriage is now " + i);
+				selected_carriage = train.Carriages[i];
+			});
+
+			button_rt.sizeDelta = dropspot.GetComponent<RectTransform>().sizeDelta;
+
+		}
+
+	}
+
+	private void ResizeScrollView(GameObject scroll_view)
+	{
+		//This is super incomplete, eventually make this real and use it to replace the thing for setting up the garage scroll view.
 	}
 
 	public void Drop(PointerEventData data)
@@ -127,13 +155,12 @@ public class Railyard : stationUI{
 
 	public void AddCarriage(GameObject added_carriage)
 	{
-		train.AddCarriage(added_carriage);  //eventually add some logic for removing a specific carriage
+		train.AddCarriage(added_carriage);
 	}
 
 	public void RemoveCarriage(GameObject selected_carriage)
 	{
-		//GameObject rear_train = train.RemoveCarriage(selected_carriage);
-		GameObject rear_train = train.RemoveCarriage(carriage_to_remove);//temp, replace with above line
+		GameObject rear_train = train.RemoveCarriage(selected_carriage);
 		train.CombineTrains(rear_train.GetComponent<TrainController>());
 	}
 }
