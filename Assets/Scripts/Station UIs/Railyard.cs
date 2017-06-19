@@ -116,11 +116,13 @@ public class Railyard : stationUI{
 			button_image.sprite = train.Carriages[i].GetComponent<CarriageController>().sprite;
 
 			//adds functionality. Maybe at some point change this to a toggle instead of button, but maybe also change the toggle thing on the store script to be buttons, idk
-			button.onClick.AddListener(delegate 
+			int x = i;  //for some reason directly using the iterator inside the function makes things not work, but this fixes it.
+			button.onClick.AddListener(delegate
 			{
-				Debug.Log("selected_carriage is now " + i);
-				selected_carriage = train.Carriages[i];
+				Debug.Log("selected_carriage is now " + x);
+				selected_carriage = train.Carriages[x];
 			});
+
 
 			button_rt.sizeDelta = dropspot.GetComponent<RectTransform>().sizeDelta;
 
@@ -128,6 +130,7 @@ public class Railyard : stationUI{
 
 	}
 
+	
 	private void ResizeScrollView(GameObject scroll_view)
 	{
 		//This is super incomplete, eventually make this real and use it to replace the thing for setting up the garage scroll view.
