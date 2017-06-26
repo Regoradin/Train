@@ -50,59 +50,7 @@ public class Railyard : stationUI{
 			garage_tiles[i].GetComponent<Draggable>().carriage = garage[i];
 		}
 
-		//float max_icon_width = 0;
-		////put the buttons where they go
-		//for (int i = 0; i < garage.Count; i++)
-		//{
-		//	GameObject icon = Instantiate(draggable_icon);
-
-		//	icon.transform.SetParent(garage_scroll_content.transform);
-
-		//	//initial position at top of content
-		//	Vector2 new_local_position = new Vector2(0, garage_scroll_content.GetComponent<RectTransform>().anchoredPosition.y);
-		//	//applying all the offsets
-		//	Rect icon_rect = icon.GetComponent<RectTransform>().rect;
-		//	Vector2 position_modifier = new Vector2(-icon_offset - icon_rect.width / 2, (icon_offset + icon_rect.height) * i + icon_rect.height / 2 + icon_offset);
-		//	new_local_position -= position_modifier;
-
-
-		//	icon.GetComponent<RectTransform>().anchorMax = Vector2.up;
-		//	icon.GetComponent<RectTransform>().anchorMin = Vector2.up;
-		//	icon.GetComponent<RectTransform>().anchoredPosition = new_local_position;
-
-		//	if (icon_rect.width > max_icon_width)
-		//	{
-		//		max_icon_width = icon_rect.width;
-		//	}
-
-		//	icon.GetComponent<Draggable>().carriage = garage[i];
-
-		//	generated_elems.Add(icon);
-		//}
-
-		////making the scrollview and content the right size
-		//RectTransform view_rect = garage_scroll_view.GetComponent<RectTransform>();
-
-		//float width = icon_offset * 2 + max_icon_width;
-		//width += garage_scroll_view.GetComponent<ScrollRect>().verticalScrollbar.GetComponent<RectTransform>().rect.width;
-
-		//view_rect.sizeDelta = new Vector2(width, view_rect.sizeDelta.y);
-		//view_rect.anchoredPosition = new Vector2(width / 2, view_rect.anchoredPosition.y);
-
-		//float height = icon_offset;
-		//if (generated_elems.Count != 0)
-		//{
-		//	foreach (GameObject icon in generated_elems)
-		//	{
-		//		height += icon.GetComponent<RectTransform>().rect.height + icon_offset;
-		//	}
-		//}
-
-		//height += garage_scroll_view.GetComponent<ScrollRect>().horizontalScrollbar.GetComponent<RectTransform>().rect.height;
-
-		//RectTransform content_rect = garage_scroll_content.GetComponent<RectTransform>();
-		//content_rect.sizeDelta = new Vector2(content_rect.sizeDelta.x, height);
-
+		
 
 		//setting up the train display - This is all based off of the dimensions of dropspot for now
 
@@ -139,8 +87,6 @@ public class Railyard : stationUI{
 				}
 			});
 		}
-
-
 
 	}
 
