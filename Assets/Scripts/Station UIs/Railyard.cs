@@ -14,9 +14,10 @@ public class Railyard : stationUI{
 	public GameObject garage_scroll_view;
 	private GameObject garage_scroll_content;
 
-	private List<GameObject> draggables;
+	//a list of all generated elements that are generated from SetupUI() so that they can be wiped every time the UI is regenerated.
+	private List<GameObject> generated_elems;
 	public float icon_offset;
-
+	
 	public GameObject dropspot;
 	public GameObject train_scroll_view;
 	private GameObject train_scroll_content;
@@ -31,109 +32,189 @@ public class Railyard : stationUI{
 		rt = dropspot.transform as RectTransform;
 
 		//garage = new List<GameObject>();
-		draggables = new List<GameObject>();
-
-		garage_scroll_content = garage_scroll_view.GetComponent<ScrollRect>().content.gameObject;
-		train_scroll_content = train_scroll_view.GetComponent<ScrollRect>().content.gameObject;
-
+		generated_elems = new List<GameObject>();
 	}
 
 	public override void SetupUI()
 	{
-		//setting up the garage button area
-		//get rid of old buttons
-		foreach(GameObject icon in draggables)
+		//wiping all generated elements
+		foreach (GameObject elem in generated_elems)
 		{
-			Destroy(icon);
+			Destroy(elem);
 		}
-		draggables.Clear();
+		generated_elems.Clear();
 
-		float max_icon_width = 0;
-		//put the buttons where they go
+		List<GameObject> garage_tiles = GenerateScrollView(garage_scroll_view, draggable_icon, garage.Count);
 		for (int i = 0; i < garage.Count; i++)
 		{
-			GameObject icon = Instantiate(draggable_icon);
+			garage_tiles[i].GetComponent<Draggable>().carriage = garage[i];
+		}
 
-			icon.transform.SetParent(garage_scroll_content.transform);
+		//float max_icon_width = 0;
+		////put the buttons where they go
+		//for (int i = 0; i < garage.Count; i++)
+		//{
+		//	GameObject icon = Instantiate(draggable_icon);
+
+		//	icon.transform.SetParent(garage_scroll_content.transform);
+
+		//	//initial position at top of content
+		//	Vector2 new_local_position = new Vector2(0, garage_scroll_content.GetComponent<RectTransform>().anchoredPosition.y);
+		//	//applying all the offsets
+		//	Rect icon_rect = icon.GetComponent<RectTransform>().rect;
+		//	Vector2 position_modifier = new Vector2(-icon_offset - icon_rect.width / 2, (icon_offset + icon_rect.height) * i + icon_rect.height / 2 + icon_offset);
+		//	new_local_position -= position_modifier;
+
+
+		//	icon.GetComponent<RectTransform>().anchorMax = Vector2.up;
+		//	icon.GetComponent<RectTransform>().anchorMin = Vector2.up;
+		//	icon.GetComponent<RectTransform>().anchoredPosition = new_local_position;
+
+		//	if (icon_rect.width > max_icon_width)
+		//	{
+		//		max_icon_width = icon_rect.width;
+		//	}
+
+		//	icon.GetComponent<Draggable>().carriage = garage[i];
+
+		//	generated_elems.Add(icon);
+		//}
+
+		////making the scrollview and content the right size
+		//RectTransform view_rect = garage_scroll_view.GetComponent<RectTransform>();
+
+		//float width = icon_offset * 2 + max_icon_width;
+		//width += garage_scroll_view.GetComponent<ScrollRect>().verticalScrollbar.GetComponent<RectTransform>().rect.width;
+
+		//view_rect.sizeDelta = new Vector2(width, view_rect.sizeDelta.y);
+		//view_rect.anchoredPosition = new Vector2(width / 2, view_rect.anchoredPosition.y);
+
+		//float height = icon_offset;
+		//if (generated_elems.Count != 0)
+		//{
+		//	foreach (GameObject icon in generated_elems)
+		//	{
+		//		height += icon.GetComponent<RectTransform>().rect.height + icon_offset;
+		//	}
+		//}
+
+		//height += garage_scroll_view.GetComponent<ScrollRect>().horizontalScrollbar.GetComponent<RectTransform>().rect.height;
+
+		//RectTransform content_rect = garage_scroll_content.GetComponent<RectTransform>();
+		//content_rect.sizeDelta = new Vector2(content_rect.sizeDelta.x, height);
+
+
+		//setting up the train display - This is all based off of the dimensions of dropspot for now
+
+		//creating a prototype button object to be generated from. This may be done by a prefab in the future which would make a lot of this setup unnescessary
+		GameObject toggle_object = new GameObject();
+		RectTransform button_rt = toggle_object.AddComponent<RectTransform>();
+		button_rt.sizeDelta = dropspot.GetComponent<RectTransform>().sizeDelta;
+		toggle_object.AddComponent<Toggle>();
+		toggle_object.AddComponent<Image>();
+
+		//creating the toggle group that they will all use
+		GameObject toggle_group = new GameObject();
+		toggle_group.AddComponent<ToggleGroup>();
+
+		List<GameObject> toggles = GenerateScrollView(train_scroll_view, toggle_object, train.Carriages.Count);
+
+		for (int i = 0; i < train.Carriages.Count; i++)
+		{
+			toggles[i].GetComponent<Image>().sprite = train.Carriages[i].GetComponent<CarriageController>().sprite;
+			toggles[i].GetComponent<Toggle>().group = toggle_group.GetComponent<ToggleGroup>();
+
+			//changes the highlighted color so you can see what you have selected
+			ColorBlock colors = toggles[i].GetComponent<Toggle>().colors;
+			colors.highlightedColor = new Color(1, 1, 1);
+			Debug.Log("Chanign color for " + colors);
+
+			//adding functionality. x=i exists so that the value that it sets it to doesn't increment as it goes through the list
+			int x = i;
+			toggles[i].GetComponent<Toggle>().onValueChanged.AddListener(delegate (bool input)
+			{
+				if (input == true)
+				{
+					selected_carriage = train.Carriages[x];
+				}
+			});
+		}
+
+
+
+	}
+
+	/// <summary>
+	/// Takes a scroll view and a gameobject that is the icon that is spaced out evenly in the columns. Returns a list of all of the icons so that they can be customized with stuff
+	/// </summary>
+	/// <param name="scroll_view">The ScrollView that this is being done to</param>
+	/// <param name="icon">The gameobject that is being instantiated</param>
+	/// <param name="icon_count">The number of icons to instantiate</param>
+	/// <returns></returns>
+	private List<GameObject> GenerateScrollView(GameObject scroll_view, GameObject icon, int icon_count)
+	{
+		List<GameObject> result = new List<GameObject>();
+		GameObject scroll_content = scroll_view.GetComponent<ScrollRect>().content.gameObject;
+
+
+		float max_icon_width = 0;
+		//Instantiates the tiles and places them where they are supposed to go
+		for (int i = 0; i < icon_count; i++)
+		{
+
+			GameObject tile = Instantiate(icon);
+
+			tile.transform.SetParent(scroll_content.transform);
 
 			//initial position at top of content
-			Vector2 new_local_position = new Vector2(0, garage_scroll_content.GetComponent<RectTransform>().anchoredPosition.y);
+			Vector2 new_local_position = new Vector2(0, scroll_content.GetComponent<RectTransform>().anchoredPosition.y);
 			//applying all the offsets
-			Rect icon_rect = icon.GetComponent<RectTransform>().rect;
-			Vector2 position_modifier = new Vector2(- icon_offset - icon_rect.width/2, (icon_offset + icon_rect.height) * i + icon_rect.height/2 + icon_offset);
+			Rect tile_rect = tile.GetComponent<RectTransform>().rect;
+			Vector2 position_modifier = new Vector2(-icon_offset - tile_rect.width / 2, (icon_offset + tile_rect.height) * i + tile_rect.height / 2 + icon_offset);
 			new_local_position -= position_modifier;
 
 
-			icon.GetComponent<RectTransform>().anchorMax = Vector2.up;
-			icon.GetComponent<RectTransform>().anchorMin = Vector2.up;
-			icon.GetComponent<RectTransform>().anchoredPosition = new_local_position;
+			tile.GetComponent<RectTransform>().anchorMax = Vector2.up;
+			tile.GetComponent<RectTransform>().anchorMin = Vector2.up;
+			tile.GetComponent<RectTransform>().anchoredPosition = new_local_position;
 
-			if (icon_rect.width > max_icon_width)
+			if (tile_rect.width > max_icon_width)
 			{
-				max_icon_width = icon_rect.width;
+				max_icon_width = tile_rect.width;
 			}
 
-			icon.GetComponent<Draggable>().carriage = garage[i];
+			//adds the new tile to the generated_elems list (which is maintained for the whole UI) and the result list (which is local to this ScrollView)
+			generated_elems.Add(tile);
+			result.Add(tile);
 
-			draggables.Add(icon);
 		}
 
-		//making the scrollview and content the right size
-		RectTransform view_rect = garage_scroll_view.GetComponent<RectTransform>();
+		//setting the ScrollRect to the appropriate size
+		RectTransform view_rect = scroll_view.GetComponent<RectTransform>();
 
 		float width = icon_offset * 2 + max_icon_width;
-		width += garage_scroll_view.GetComponent<ScrollRect>().verticalScrollbar.GetComponent<RectTransform>().rect.width;
+		width += scroll_view.GetComponent<ScrollRect>().verticalScrollbar.GetComponent<RectTransform>().rect.width;
 
 		view_rect.sizeDelta = new Vector2(width, view_rect.sizeDelta.y);
 		view_rect.anchoredPosition = new Vector2(width / 2, view_rect.anchoredPosition.y);
 
 		float height = icon_offset;
-		if (draggables.Count != 0)
+		if (result.Count != 0)
 		{
-			foreach (GameObject icon in draggables)
+			foreach (GameObject tile in result)
 			{
 				height += icon.GetComponent<RectTransform>().rect.height + icon_offset;
 			}
 		}
 
-		height += garage_scroll_view.GetComponent<ScrollRect>().horizontalScrollbar.GetComponent<RectTransform>().rect.height;
+		height += scroll_view.GetComponent<ScrollRect>().horizontalScrollbar.GetComponent<RectTransform>().rect.height;
 
-		RectTransform content_rect = garage_scroll_content.GetComponent<RectTransform>();
+		RectTransform content_rect = scroll_content.GetComponent<RectTransform>();
 		content_rect.sizeDelta = new Vector2(content_rect.sizeDelta.x, height);
 
 
-		//setting up the train display - This is all based off of the dimensions of dropspot for now
-		for(int i = 0; i < train.Carriages.Count; i++)
-		{
-			GameObject button_object = Instantiate(new GameObject());
-			RectTransform button_rt = button_object.AddComponent<RectTransform>();
-			Button button = button_object.AddComponent<Button>();
-			Image button_image = button_object.AddComponent<Image>();
 
-
-			button.transform.SetParent(train_scroll_content.transform);
-
-			button_image.sprite = train.Carriages[i].GetComponent<CarriageController>().sprite;
-
-			//adds functionality. Maybe at some point change this to a toggle instead of button, but maybe also change the toggle thing on the store script to be buttons, idk
-			int x = i;  //for some reason directly using the iterator inside the function makes things not work, but this fixes it.
-			button.onClick.AddListener(delegate
-			{
-				Debug.Log("selected_carriage is now " + x);
-				selected_carriage = train.Carriages[x];
-			});
-
-
-			button_rt.sizeDelta = dropspot.GetComponent<RectTransform>().sizeDelta;
-
-		}
-
-	}
-
-	
-	private void ResizeScrollView(GameObject scroll_view)
-	{
-		//This is super incomplete, eventually make this real and use it to replace the thing for setting up the garage scroll view.
+		return result;
 	}
 
 	public void Drop(PointerEventData data)
