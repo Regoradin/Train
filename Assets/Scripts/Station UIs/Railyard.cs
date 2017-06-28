@@ -6,7 +6,23 @@ using UnityEngine.EventSystems;
 
 public class Railyard : stationUI{
 
+	private GameObject Selected_carriage
+	{
+		get
+		{
+			return selected_carriage;
+		}
+		set
+		{
+			selected_carriage = value;
+
+			selected_name.text = selected_carriage.name;
+			selected_info.text = selected_carriage.GetComponent<CarriageController>().description;
+		}
+
+	}
 	private GameObject selected_carriage;
+
 
 	public List<GameObject> garage; //all of the carriages that are in the garage
 
@@ -21,6 +37,9 @@ public class Railyard : stationUI{
 	private GameObject dropspot;
 	public GameObject train_scroll_view;
 	private GameObject train_scroll_content;
+
+	public Text selected_name;
+	public Text selected_info;
 
 	[HideInInspector]
 	public bool dragging;
@@ -82,13 +101,14 @@ public class Railyard : stationUI{
 			{
 				if (input == true)
 				{
-					selected_carriage = train.Carriages[x];
+					Selected_carriage = train.Carriages[x];
 				}
 			});
 		}
 		//makes the last icon the dropspot
 		dropspot = toggles[train.Carriages.Count];
 		Destroy(dropspot.GetComponent<Toggle>());
+
 
 	}
 

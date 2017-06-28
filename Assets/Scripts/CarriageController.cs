@@ -15,6 +15,7 @@ public class CarriageController : MonoBehaviour {
 	public string direction;
 
 	public Sprite sprite;
+	public string description = "This is a default carriage";
 
 	void Start()
 	{
