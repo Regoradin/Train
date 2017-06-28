@@ -18,18 +18,15 @@ public class Railyard : stationUI{
 	private List<GameObject> generated_elems;
 	public float icon_offset;
 	
-	public GameObject dropspot;
+	private GameObject dropspot;
 	public GameObject train_scroll_view;
 	private GameObject train_scroll_content;
-
-	private RectTransform rt;
 
 	[HideInInspector]
 	public bool dragging;
 
 	void Start()
 	{
-		rt = dropspot.transform as RectTransform;
 
 		//garage = new List<GameObject>();
 		generated_elems = new List<GameObject>();
@@ -52,12 +49,12 @@ public class Railyard : stationUI{
 
 		
 
-		//setting up the train display - This is all based off of the dimensions of dropspot for now
+		//setting up the train display - This is all based off of the dimensions of the draggable icon for now
 
 		//creating a prototype button object to be generated from. This may be done by a prefab in the future which would make a lot of this setup unnescessary
 		GameObject toggle_object = new GameObject();
-		RectTransform button_rt = toggle_object.AddComponent<RectTransform>();
-		button_rt.sizeDelta = dropspot.GetComponent<RectTransform>().sizeDelta;
+		RectTransform toggle_rt = toggle_object.AddComponent<RectTransform>();
+		toggle_rt.sizeDelta = draggable_icon.GetComponent<RectTransform>().sizeDelta;
 		toggle_object.AddComponent<Toggle>();
 		toggle_object.AddComponent<Image>();
 
@@ -65,8 +62,10 @@ public class Railyard : stationUI{
 		GameObject toggle_group = new GameObject();
 		toggle_group.AddComponent<ToggleGroup>();
 
-		List<GameObject> toggles = GenerateScrollView(train_scroll_view, toggle_object, train.Carriages.Count);
+		//generates 1 too many tiles. The last one is the dropspot for dragging on new train pieces.
+		List<GameObject> toggles = GenerateScrollView(train_scroll_view, toggle_object, train.Carriages.Count + 1);
 
+		//sets up the images and toggle stuff of the train icons.
 		for (int i = 0; i < train.Carriages.Count; i++)
 		{
 			toggles[i].GetComponent<Image>().sprite = train.Carriages[i].GetComponent<CarriageController>().sprite;
@@ -87,6 +86,9 @@ public class Railyard : stationUI{
 				}
 			});
 		}
+		//makes the last icon the dropspot
+		dropspot = toggles[train.Carriages.Count];
+		Destroy(dropspot.GetComponent<Toggle>());
 
 	}
 
@@ -101,6 +103,12 @@ public class Railyard : stationUI{
 	{
 		List<GameObject> result = new List<GameObject>();
 		GameObject scroll_content = scroll_view.GetComponent<ScrollRect>().content.gameObject;
+
+		//ensures that the scrollbars are both reset to 0
+		foreach(Scrollbar bar in scroll_view.GetComponentsInChildren<Scrollbar>())
+		{
+			bar.value = 1;
+		}
 
 
 		float max_icon_width = 0;
@@ -165,6 +173,7 @@ public class Railyard : stationUI{
 
 	public void Drop(PointerEventData data)
 	{
+		RectTransform rt = dropspot.transform as RectTransform;
 		Vector2 mouse_canvas_position;
 		RectTransformUtility.ScreenPointToLocalPointInRectangle(rt, data.position, null, out mouse_canvas_position);
 
