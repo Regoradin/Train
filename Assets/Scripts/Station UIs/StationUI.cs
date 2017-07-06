@@ -8,6 +8,14 @@ public abstract class stationUI : MonoBehaviour {
 
 	public GameObject UI;
 
+	[HideInInspector]
+	public PlayerInventory inv;
+
+	private void Start()
+	{
+		inv = GameObject.Find("Player").GetComponent<PlayerInventory>();
+	}
+
 	/// <summary>
 	/// This is called whenever a train enters a station, and should set up any procedurally generated UI elements.
 	/// </summary>

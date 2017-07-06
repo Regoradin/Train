@@ -11,7 +11,7 @@ public class Engine : MonoBehaviour {
 
 	private bool shoveling = false;
 
-	private float coal;
+	public float coal;
 	private float fuel;
 	private float heat;
 
