@@ -64,6 +64,26 @@ public class Store : stationUI{
 		if (active_cargo)
 		{
 			active_cargo.RemoveCargo(type, amount,1);
+
+			if (Questy)
+			{
+				//if this is the target of an active quest, update progress and if complete, turn off questiness.
+				foreach (Quest quest in quests.Quests)
+				{
+					if(quest as DeliveryQuest)
+					{
+						DeliveryQuest delivery_quest = quest as DeliveryQuest;
+						if(delivery_quest.Target_station == this && delivery_quest.Type == type)
+						{
+							delivery_quest.Amount -= amount;
+							if(delivery_quest.Amount <= 0)
+							{
+								Questy = false;
+							}
+						}
+					}
+				}
+			}
 		}
 	}
 
