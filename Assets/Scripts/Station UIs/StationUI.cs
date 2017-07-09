@@ -11,41 +11,45 @@ public abstract class stationUI : MonoBehaviour {
 
 	[HideInInspector]
 	public PlayerInventory inv;
-	public QuestTracker quests;
 
 	public Text map_label;
 
-	private bool questy = false;
-	public bool Questy
-	{
-		get { return questy; }
-		set
-		{
-			questy = value;
-			if (value)
-			{
-				//sets the map label to an orange color if it is a questy location
-				map_label.color = new Color(1, .549f, 0);
-			}
-			else
-			{
-				//the default
-				map_label.color = new Color(50, 50, 50);
-			}
-		}
-	}
+	protected List<Quest> quests;
 
 
 	private void Start()
 	{
 		inv = GameObject.Find("Player").GetComponent<PlayerInventory>();
-		quests = GameObject.Find("Player").GetComponent<QuestTracker>();
 	}
 
 	/// <summary>
 	/// This is called whenever a train enters a station, and should set up any procedurally generated UI elements.
 	/// </summary>
 	public abstract void SetupUI();
+
+	/// <summary>
+	/// Associates a quest with this station
+	/// </summary>
+	public void AssociateQuest(Quest quest)
+	{
+		quests.Add(quest);
+		map_label.color = new Color(1, .549f, 0);
+	}
+	/// <summary>
+	/// Finishes a quest already associated with this station
+	/// </summary>
+	/// <param name="quest"></param>
+	public void CompleteQuest(Quest quest)
+	{
+		quests.Remove(quest);
+		if(quests.Count == 0)
+		{
+			map_label.color = new Color(50, 50, 50);
+		}
+
+		quest.Complete();
+		quest = null;
+	}
 
 
 	/// <summary>

@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Quest : MonoBehaviour {
+public class Quest {
 
-	new public string name;
+	public string name;
 	public string description;
 	public float reward = 0;	//for the mean time rewards are purely monetary, maybe something else in the future
 
@@ -14,10 +14,9 @@ public class Quest : MonoBehaviour {
 		this.description = description;
 	}
 
-	protected void Complete()
+	public void Complete()
 	{
 		GameObject.Find("Player").GetComponent<PlayerInventory>().Money += reward;
-		Destroy(this);
 	}
 
 }

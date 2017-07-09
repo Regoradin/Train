@@ -32,10 +32,6 @@ public class DeliveryQuest : Quest {
 		set
 		{
 			amount = value;
-			if (amount <= 0)
-			{
-				Complete();
-			}
 		}
 	}
 
@@ -46,6 +42,6 @@ public class DeliveryQuest : Quest {
 		this.type = type;
 		this.amount = amount;
 
-		target_station.Questy = true;
+		target_station.AssociateQuest(this);
 	}
 }

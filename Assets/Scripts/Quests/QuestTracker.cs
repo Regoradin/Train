@@ -13,7 +13,12 @@ public class QuestTracker : MonoBehaviour {
 		}
 	}
 
-	void AddQuest(Quest quest)
+	private void Start()
+	{
+		quests = new List<Quest>();
+	}
+
+	public void AddQuest(Quest quest)
 	{
 		quests.Add(quest);
 	}
