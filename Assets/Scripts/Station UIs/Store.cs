@@ -67,12 +67,13 @@ public class Store : stationUI{
 
 			if(quests.Count >= 0)
 			{
-				foreach(Quest quest in quests)
+				for(int i = 0; i < quests.Count; i++)
 				{
-					DeliveryQuest delivery_quest = quest as DeliveryQuest;
-					if(delivery_quest != null && delivery_quest.Type == type)
+					DeliveryQuest delivery_quest = quests[i] as DeliveryQuest;
+					if(delivery_quest != null && delivery_quest.Type == type && !delivery_quest.completed)
 					{
 						delivery_quest.Amount -= amount;
+						Debug.Log("You only have to deliver " + delivery_quest.Amount + " " + delivery_quest.Type);
 						if(delivery_quest.Amount <= 0)
 						{
 							CompleteQuest(delivery_quest);

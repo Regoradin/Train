@@ -20,6 +20,8 @@ public abstract class stationUI : MonoBehaviour {
 	private void Start()
 	{
 		inv = GameObject.Find("Player").GetComponent<PlayerInventory>();
+
+		quests = new List<Quest>();
 	}
 
 	/// <summary>
@@ -44,11 +46,10 @@ public abstract class stationUI : MonoBehaviour {
 		quests.Remove(quest);
 		if(quests.Count == 0)
 		{
-			map_label.color = new Color(50, 50, 50);
+			map_label.color = new Color(50/255, 50/255, 50/255);
 		}
 
 		quest.Complete();
-		quest = null;
 	}
 
 

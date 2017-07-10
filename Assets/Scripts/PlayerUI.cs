@@ -16,6 +16,8 @@ public class PlayerUI : MonoBehaviour {
 
 	public float health_offset;
 
+	public Store target_station;
+
 	void Start()
 	{
 		canvas = GetComponentInParent<Canvas>();
@@ -40,20 +42,21 @@ public class PlayerUI : MonoBehaviour {
 	{
 		string result = "Quests";
 
-		Debug.Log(quest_tracker.Quests.Count);
-		foreach(Quest quest in quest_tracker.Quests)
+		foreach (Quest quest in quest_tracker.Quests)
 		{
-			result += "\n\n<size=18>" + quest.name + "</size>\n";
-			result += quest.description;
+			if (!quest.completed)
+			{
+				result += "\n\n<size=18>" + quest.name + "</size>\n";
+				result += quest.description;
+			}
 		}
 
-		Debug.Log(result);
 		return result;
 	}
 
 	public void AddQuest()
 	{
-		quest_tracker.AddQuest(new Quest("Test Quest", "to test questing"));
+		quest_tracker.AddQuest(new DeliveryQuest("Test Quest", "to test questing", target_station, "wood", 10));
 	}
 
 
