@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Engine : MonoBehaviour {
+public class Engine : MonoBehaviour, IAiInteractable {
 
 	private TrainController train_controller;
 
@@ -26,6 +26,8 @@ public class Engine : MonoBehaviour {
 	//how efficiently your heat is turned into motion
 	public float engine_efficiency;
 
+	private bool task_requested = false;
+
 	void Start () {
 
 		train_controller = transform.GetComponentInParent<TrainController>();
@@ -43,11 +45,8 @@ public class Engine : MonoBehaviour {
 		{
 			if (Input.GetButtonDown("Interact"))
 			{
-				if (shoveling == false)
-				{
-					//some code here to trigger the shovel animation and handle when shovel should be called and set back to false and all that jazz.
-					Shovel();
-				}
+				//some code here to trigger the shovel animation and handle when shovel should be called and set back to false and all that jazz.
+				Shovel();
 			}
 			if (Input.GetKeyDown("k"))
 			{
@@ -60,7 +59,23 @@ public class Engine : MonoBehaviour {
 		}
 	}
 
-	void Update()
+	public void AiInteract(string type)
+	{
+		Shovel();
+		task_requested = false;
+	}
+
+	private void Update()
+	{
+		//tell the crewmanager to send crew if fuel level drops below a certain amount. The type doesn't matter since the engine only has one assosciated action.
+		if (fuel <= 30 && !task_requested)
+		{
+			train_controller.crew_manager.AddTask(new Task(gameObject, "fuel"));
+			task_requested = true;
+		}
+	}
+
+	private void FixedUpdate()
 	{
 		if (fuel > 0)
 		{
@@ -94,15 +109,18 @@ public class Engine : MonoBehaviour {
 	/// </summary>
 	void Shovel()
 	{
-		if (fuel + shovel_efficiency < max_fuel)
+		if (!shoveling)
 		{
-			shoveling = true;
-			Debug.Log("shoveling");
+			if (fuel + shovel_efficiency < max_fuel)
+			{
+				shoveling = true;
+				Debug.Log("shoveling");
 
-			coal -= shovel_efficiency;
-			fuel += shovel_efficiency;
+				coal -= shovel_efficiency;
+				fuel += shovel_efficiency;
 
-			Invoke("StopShovel", 1);
+				Invoke("StopShovel", 1);
+			}
 		}
 	}
 	void StopShovel()

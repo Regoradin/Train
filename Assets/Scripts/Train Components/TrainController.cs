@@ -15,6 +15,7 @@ public class TrainController : MonoBehaviour {
 
 	[HideInInspector]
 	public List<CargoController> cargo_controllers;
+	public CrewManager crew_manager;
 
 	public float top_speed;
 
@@ -50,6 +51,8 @@ public class TrainController : MonoBehaviour {
 		//builds a list of all the carriages in the same order as they are in the inspector
 		carriages = new List<GameObject>();
 		cargo_controllers = new List<CargoController>();
+
+		crew_manager = GetComponentInChildren<CrewManager>();
 
 		BuildTrainLists();
 		UpdateCarriageDirection(direction);			//this has to be done at the start to set direction, but after the carriages list is built
