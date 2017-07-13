@@ -17,44 +17,93 @@ public class Seat : MonoBehaviour {
 	public Transform seated_transform;
 
 	private Transform previous_transform;
+	public GameObject seated_gameobject
+	{
+		get
+		{
+			return previous_transform.gameObject;
+		}
+	}
 
 	private void OnTriggerStay(Collider other)
 	{
 		if(other.tag == "Player")
 		{
+			//with this setup if the player tries to sit, either they will sit or kick the crew out of the seat.
 			if (Input.GetButtonDown("Interact"))
 			{
-				//attaching player to seat
-				if (seated == false)
+				if (!seated)
 				{
-					previous_transform = other.transform;
-					other.transform.SetParent(transform);
-
-					seated = true;
-
-					other.GetComponent<PlayerAnimationController>().enabled = false;
-					//other.GetComponent<CharacterController>().enabled = false;
-
-					other.transform.position = seated_transform.position;
-					other.transform.rotation = seated_transform.rotation;
+					TrySeat(other.gameObject);
 				}
-
-				else if(seated == true)
+				else
 				{
-					other.transform.SetParent(previous_transform);
-
-					seated = false;
-
-					other.GetComponent<PlayerAnimationController>().enabled = true;
-					//other.GetComponent<CharacterController>().enabled = true;
+					TryDeseat();
 				}
 			}
 		}
 	}
 
-
-	private void Update()
+	/// <summary>
+	/// Attempts to seat a gameobject in the seat. Returns false if the seat is already occupied.
+	/// </summary>
+	/// <param name="other"></param>
+	/// <returns></returns>
+	public bool TrySeat(GameObject other)
 	{
+		if (seated == false)
+		{
+			previous_transform = other.transform;
+			other.transform.SetParent(transform);
 
+			seated = true;
+
+			if (other.CompareTag("Player"))
+			{
+				other.GetComponent<PlayerAnimationController>().enabled = false;
+			}
+
+			other.transform.position = seated_transform.position;
+			other.transform.rotation = seated_transform.rotation;
+
+			return true;
+		}
+
+		else
+		{
+			return false;
+		}
 	}
+
+	/// <summary>
+	/// Attempts to deseat the current sitter. Returns false if nobody is sitting.
+	/// </summary>
+	/// <param name="other"></param>
+	/// <returns></returns>
+	public bool TryDeseat()
+	{
+		if (seated == true)
+		{
+			if (seated_gameobject.GetComponent<Crew>())
+			{
+				seated_gameobject.GetComponent<Crew>().busy = false;
+			}
+			seated_gameobject.transform.SetParent(previous_transform);	
+
+			seated = false;
+
+			if (seated_gameobject.CompareTag("Player"))
+			{
+				seated_gameobject.GetComponent<PlayerAnimationController>().enabled = true;
+			}
+
+			return true;
+		}
+
+		else
+		{
+			return false;
+		}
+	}
+
 }

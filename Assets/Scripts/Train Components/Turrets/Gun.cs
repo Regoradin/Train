@@ -16,55 +16,48 @@ public class Gun : MonoBehaviour {
 
 	public float muzzle_velocity;
 
+	private bool reloading = false;
+
 	void Start()
 	{
 		ammo = round_size;
 	}
 
-	void Update()
+	/// <summary>
+	/// Shoots the bullet if the gun is loaded. If not loaded and not reloading, will reload.
+	/// </summary>
+	/// <param name="bullet"></param>
+	public void Shoot(GameObject bullet)
 	{
-		if (seat.Seated)
+		if (!reloading)
 		{
-			if (Input.GetButton("Fire1"))
+			if (ammo > 0)
 			{
-				if (ammo > 0)
+				if (Time.time > shot_reload_time + shot_last_time)
 				{
-					Shoot(bullet);
-				}
-				else
-				{
-					Debug.Log("Need to reload!");
+					//this currently starts the bullet in the middle of the gun which causes problems if the collider is turned on and the gun itself is damagable
+					GameObject new_bullet = Instantiate(bullet, transform.position, transform.rotation);
+
+					Vector3 velocity = Vector3.forward * muzzle_velocity;
+					velocity = transform.TransformDirection(velocity);
+					new_bullet.GetComponent<Rigidbody>().velocity = velocity;
+
+					ammo -= 1;
+					shot_last_time = Time.time;
 				}
 			}
-			if (Input.GetButtonDown("Reload"))
+			else
 			{
-				Debug.Log("Reloading");
-				//this will probably have to change to incorporate animations
 				Invoke("Reload", round_reload_time);
+				reloading = true;
 			}
 		}
 	}
 
-	void Shoot(GameObject bullet)
-	{
-		if (Time.time > shot_reload_time + shot_last_time)
-		{
-			//this currently starts the bullet in the middle of the gun which causes problems if the collider is turned on and the gun itself is damagable
-			GameObject new_bullet = Instantiate(bullet, transform.position, transform.rotation);
-
-			Vector3 velocity = Vector3.forward * muzzle_velocity;
-			velocity = transform.TransformDirection(velocity);
-			new_bullet.GetComponent<Rigidbody>().velocity = velocity;
-
-			ammo -= 1;
-			shot_last_time = Time.time;
-		}
-	}
-
-	void Reload()
+	public void Reload()
 	{
 		ammo = round_size;
-		Debug.Log("Reloaded");
+		reloading = false;
 	}
 
 }

@@ -59,7 +59,7 @@ public class Engine : MonoBehaviour, IAiInteractable {
 		}
 	}
 
-	public void AiInteract(string type)
+	public void AiInteract(GameObject ai, string type)
 	{
 		Shovel();
 		task_requested = false;
@@ -70,7 +70,7 @@ public class Engine : MonoBehaviour, IAiInteractable {
 		//tell the crewmanager to send crew if fuel level drops below a certain amount. The type doesn't matter since the engine only has one assosciated action.
 		if (fuel <= 30 && !task_requested)
 		{
-			train_controller.crew_manager.AddTask(new Task(gameObject, "fuel"));
+			train_controller.crew_manager.AddTask(new Task(gameObject, "refuel"));
 			task_requested = true;
 		}
 	}
