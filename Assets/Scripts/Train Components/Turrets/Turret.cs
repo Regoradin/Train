@@ -13,6 +13,9 @@ public class Turret : MonoBehaviour, IAiInteractable {
 	public float max_roation_y;
 
 	private GameObject ai;
+	private bool task_requested = false;
+
+	public GameObject target; //this will eventually be replaced with some better ai targetting system, but for now it works.
 
 	void Update () {
 		if (seat.Seated)
@@ -36,13 +39,19 @@ public class Turret : MonoBehaviour, IAiInteractable {
 			}
 			else
 			{
-				//If it's not the player it must be a crew, so this is the crew functioning logic spot here.
+				//If it's not the player it must be a crew, so this is the crew functioning logic spot here. NB: some logic will have to be included here for when the crew leaves the gun, and then set task_requested to false
 			}
 		}
 		else
 		{
 			//reset to normal
 			transform.rotation = Quaternion.identity;
+		}
+
+		if(!seat.Seated && !task_requested && target != null)
+		{
+			GetComponentInParent<TrainController>().crew_manager.AddTask(new Task(gameObject, "man turret"));
+			task_requested = true;
 		}
 
 	}
