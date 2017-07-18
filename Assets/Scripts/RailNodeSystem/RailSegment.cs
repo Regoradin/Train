@@ -6,6 +6,9 @@ public class RailSegment : MonoBehaviour {
 
 	public RailNode end_node;
 	public float distance;
+	[HideInInspector]
+	public float weighted_distance; //for traffic weights etc.
+
 	private string direction;
 	public string Direction
 	{
@@ -26,4 +29,8 @@ public class RailSegment : MonoBehaviour {
 		}
 	}
 
+	private void Start()
+	{
+		weighted_distance = distance;
+	}
 }
