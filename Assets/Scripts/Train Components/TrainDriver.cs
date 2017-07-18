@@ -11,7 +11,7 @@ public class TrainDriver : MonoBehaviour {
 
 	//The train controllers on this train, and the one that is ahead of it
 	private TrainController train_controller;
-	private TrainController next_train_controller;
+	public TrainController next_train_controller;
 
 	private void Start()
 	{
@@ -38,15 +38,31 @@ public class TrainDriver : MonoBehaviour {
 	{
 		//updates the path having passed this node
 		current_node = node;
-		if(path[0] == current_node)
+		if (path[0] == current_node)
 		{
 			path.Remove(node);
 		}
 
-		if (node.connected_nodes.Contains(path[0]))
+		//Determines the index of the next segment, and recalculates the pathfinding if it does not exist
+		int next_node_index = -1;
+		while(next_node_index == -1)
 		{
-			//figure out direction to get to next node here.
+			foreach(RailSegment segment in node.connected_segments)
+			{
+				if(segment.end_node == path[0])
+				{
+					next_node_index = node.connected_segments.IndexOf(segment);
+				}
+				if(next_node_index == -1)
+				{
+					Pathfind();
+				}
+			}
 		}
+		
+		//changes the direction appropriately
+		train_controller.Direction = node.connected_segments[next_node_index].Direction;
+
 	}
 
 	private void Pathfind()
