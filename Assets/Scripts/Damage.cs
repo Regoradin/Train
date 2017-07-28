@@ -2,12 +2,14 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Damage : MonoBehaviour {
+public class Damage : MonoBehaviour, IAiInteractable {
+
+	private TrainController train_controller;
 
 	public float max_health;
 
 	private float health;
-	private float Health
+	public float Health
 	{
 		get
 		{
@@ -15,23 +17,43 @@ public class Damage : MonoBehaviour {
 		}
 		set
 		{
-			Debug.Log(name + value);
 			health = value;
 			if (health <= 0)
 			{
-				Destroy(gameObject);
+				health = 0;
+				Break();
+			}
+			if (health >= max_health)
+			{
+				health = max_health;
+			}
+			else if (reparable)
+			{
+				//if the thing is now damaged, call for repairs
+				train_controller.crew_manager.AddTask(new Task(gameObject, "Repair", 2));
 			}
 		}
 	}
 
 	public float damage = -1;
+	public bool destroy_on_break = false;
+	public bool reparable = true;
 
-	void Start()
+	[HideInInspector]
+	public bool broken = false;
+
+	void Awake()
 	{
 		health = max_health;
+		train_controller = GetComponentInParent<TrainController>();
+
+		if(damage == -1)
+		{
+			Debug.Log("Damage on " + name + " is set to -1");
+		}
 	}
 
-	void OnTriggerEnter(Collider other)
+	private void OnTriggerEnter(Collider other)
 	{
 		if (other.GetComponent<Damage>())
 		{
@@ -52,4 +74,28 @@ public class Damage : MonoBehaviour {
 		}
 	}
 
+	public void AiInteract(GameObject ai, string type)
+	{
+		float amount = 10;//this is where you will get the repair ability of the ai.
+		Repair(amount);
+	}
+
+	public void Repair(float amount)
+	{
+		if (reparable)
+		{
+			Health += amount;
+		}
+	}
+
+	public void Break()
+	{
+		broken = true;
+		if (destroy_on_break)
+		{
+			Destroy(gameObject);
+			return;
+		}
+		train_controller.crew_manager.AddTask(new Task(gameObject, "Repair", 1));
+	}
 }

@@ -5,6 +5,7 @@ using UnityEngine;
 public class Engine : MonoBehaviour, IAiInteractable {
 
 	private TrainController train_controller;
+	private Damage damage;
 
 	public ParticleSystem smoke;
 	public float smoke_emission_rate;
@@ -31,6 +32,7 @@ public class Engine : MonoBehaviour, IAiInteractable {
 	void Start () {
 
 		train_controller = transform.GetComponentInParent<TrainController>();
+		damage = GetComponent<Damage>();
 
 		coal = max_coal;
 		fuel = 0;
@@ -88,8 +90,9 @@ public class Engine : MonoBehaviour, IAiInteractable {
 		}
 
 
-		//running the engine
-		float engine_force = heat * engine_efficiency * Time.deltaTime;
+		//running the engine. Currently scales linearly with damage.
+		float engine_force = heat * engine_efficiency * Time.deltaTime * (damage.Health / damage.max_health);
+
 		if (train_controller.target_speed > train_controller.local_speed && train_controller.local_speed > 0)
 		{
 			train_controller.AddForce(engine_force);
