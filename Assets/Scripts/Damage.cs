@@ -85,6 +85,7 @@ public class Damage : MonoBehaviour, IAiInteractable {
 		if (reparable)
 		{
 			Health += amount;
+			Debug.Log("Repairing");
 		}
 	}
 

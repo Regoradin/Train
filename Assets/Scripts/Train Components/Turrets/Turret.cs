@@ -28,7 +28,7 @@ public class Turret : MonoBehaviour, IAiInteractable {
 
 				transform.eulerAngles = new Vector3(0, ClampAngle(transform.eulerAngles.y, -max_rotation_x, max_rotation_x), ClampAngle(transform.eulerAngles.z, -max_roation_y, max_roation_y));
 
-				if (Input.GetButton("Fire1"))
+				if (Input.GetButton("Use"))
 				{
 					gun.Shoot(bullet);
 				}
