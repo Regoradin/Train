@@ -6,7 +6,29 @@ public class RailNode : MonoBehaviour {
 
 	public List<RailSegment> connected_segments;
 
+	[HideInInspector]
 	public TrainController last_train_controller;
+
+	//these will be used by TrainDrivers doing pathfinding, and will be wiped when finished.
+	[HideInInspector]
+	public float g_score = -1;
+	[HideInInspector]
+	public float h_score = -1;
+	public float total_score
+	{
+		get
+		{
+			return g_score + h_score;
+		}
+	}
+	[HideInInspector]
+	public RailNode parent_node;
+
+	private void Awake()
+	{
+		connected_segments = new List<RailSegment>();
+		connected_segments.AddRange(GetComponents<RailSegment>());
+	}
 
 	private void OnTriggerEnter(Collider other)
 	{
@@ -25,5 +47,13 @@ public class RailNode : MonoBehaviour {
 			last_train_controller = other_controller;
 		}
 
+	}
+
+	public void ResetPathfinding()
+	{
+		g_score = -1;
+		h_score = -1;
+
+		parent_node = null;
 	}
 }
