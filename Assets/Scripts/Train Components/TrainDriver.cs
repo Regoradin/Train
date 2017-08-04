@@ -41,6 +41,10 @@ public class TrainDriver : MonoBehaviour {
 				train_controller.target_speed = next_train_controller.target_speed;
 			}
 		}
+		else
+		{
+			train_controller.target_speed = train_controller.max_speed;
+		}
 	}
 
 	public void EnterNode(RailNode node)

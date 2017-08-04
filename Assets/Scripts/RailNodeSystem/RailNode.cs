@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class RailNode : MonoBehaviour {
 
+	[HideInInspector]
 	public List<RailSegment> connected_segments;
 
 	[HideInInspector]

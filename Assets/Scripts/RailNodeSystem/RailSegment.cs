@@ -9,6 +9,7 @@ public class RailSegment : MonoBehaviour {
 	[HideInInspector]
 	public float weighted_distance; //for traffic weights etc.
 
+	[SerializeField]
 	private string direction;
 	public string Direction
 	{
