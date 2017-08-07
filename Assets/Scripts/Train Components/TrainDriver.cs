@@ -43,8 +43,9 @@ public class TrainDriver : MonoBehaviour {
 		}
 		else
 		{
-			train_controller.target_speed = train_controller.max_speed;
+			train_controller.target_speed = train_controller.top_speed;
 		}
+
 	}
 
 	public void EnterNode(RailNode node)
@@ -84,6 +85,9 @@ public class TrainDriver : MonoBehaviour {
 		
 		//changes the direction appropriately
 		train_controller.Direction = node.connected_segments[next_node_index].Direction;
+		Debug.Log("New direction is: " + train_controller.Direction);
+		train_controller.target_speed = train_controller.top_speed;
+		Debug.Log("target speed is: " + train_controller.target_speed);
 
 	}
 

@@ -18,7 +18,6 @@ public class TrainController : MonoBehaviour {
 	public CrewManager crew_manager;
 
 	public float top_speed;
-	public float max_speed = 100;
 
 	[HideInInspector]
 	public float local_speed;
@@ -64,13 +63,13 @@ public class TrainController : MonoBehaviour {
 	{
 		local_speed = carriages[0].transform.InverseTransformDirection(carriages[0].GetComponent<Rigidbody>().velocity).z;
 
-		if(target_speed >= max_speed)
+		if(target_speed >= top_speed)
 		{
-			target_speed = max_speed;
+			target_speed = top_speed;
 		}
-		else if(target_speed <= -max_speed)
+		else if(target_speed <= -top_speed)
 		{
-			target_speed = -max_speed;
+			target_speed = -top_speed;
 		}
 
 		//completely stops the train if it is below some stupid threshold for unimanginably small speeds, and no acceleration is being requested
